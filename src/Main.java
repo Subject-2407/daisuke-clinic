@@ -10,8 +10,7 @@ import shared.repository.SpecialtyRepository;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        // load patient repository
-        
+        // load patient repository        
         SpecialtyRepository.load();
         PatientRepository.load();
         DoctorRepository.load();
