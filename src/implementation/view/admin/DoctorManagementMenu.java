@@ -1,0 +1,46 @@
+package implementation.view.admin;
+
+import java.util.Scanner;
+
+import implementation.controller.DoctorController;
+import utility.Input;
+import utility.UserInterface;
+
+public class DoctorManagementMenu {
+    public static void show(Scanner scanner) {
+        while (true) {
+            UserInterface.update("Doctor Management");
+            String[] options = {
+                "Add a Doctor",
+                "Find a Doctor by ID",
+                "Remove a Doctor",
+                "View All Doctors\n",
+                "Return to Main Menu"
+            };
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            String input = new Input(scanner, "Enter choice: ").validate().get();
+            switch (input == null ? "0" : input) {
+                case "1":
+                    DoctorController.addDoctor(scanner);
+                    break;
+                case "2":
+                    DoctorController.findDoctor(scanner);
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    DoctorController.viewDoctors(scanner);
+                    break;
+                case "5":
+                    return;
+                case "0":
+                    System.exit(0);
+                default:
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+            }
+        }
+    }
+}
