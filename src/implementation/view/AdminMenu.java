@@ -1,8 +1,10 @@
-package implementation.view.admin;
+package implementation.view;
 
 import java.util.Scanner;
 
 import implementation.model.Admin;
+import implementation.view.admin.DoctorManagementMenu;
+import implementation.view.admin.SpecialtyManagementMenu;
 import shared.LoginState;
 import shared.repository.AdminRepository;
 import utility.Input;
@@ -20,9 +22,10 @@ public class AdminMenu {
             String[] options = {
                 "Specialty Management",
                 "Doctor Management",
-                "View Appointments", // based on specialty
-                "View Medical Records",
-                "Edit Profile\n",
+                "Admin Management (W.I.P.)",
+                "View Appointments (W.I.P.)", // based on specialty
+                "View Medical Records (W.I.P.)",
+                "Edit Profile (W.I.P.)\n",
                 "Log Out"
             };
             UserInterface.createOptions(options);
@@ -42,7 +45,7 @@ public class AdminMenu {
                     break;
                 case "5":
                     break;
-                case "6":
+                case "7":
                     LoginState.logout();
                     break menuLoop;
                 case "0":

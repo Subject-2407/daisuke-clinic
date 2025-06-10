@@ -22,7 +22,8 @@ public class PatientMenu {
                 "Book an Appointment",
                 "View My Appointments",
                 "View My Medical Records",
-                "Edit Profile\n",
+                "Edit Profile",
+                "Contact Admin\n",
                 "Log Out"
             };
             UserInterface.createOptions(options);

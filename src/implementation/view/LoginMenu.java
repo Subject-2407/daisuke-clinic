@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import implementation.controller.LoginController;
 import implementation.controller.PatientController;
-import implementation.view.admin.AdminMenu;
 import shared.LoginState;
 import shared.enums.Role;
 import utility.Input;
@@ -15,8 +14,8 @@ public class LoginMenu {
         menuLoop: while (true) {
             UserInterface.update("Login");
             String[] options = {
-                "Log In as Patient",
-                "Log In as Doctor",
+                "Log In as Patient (W.I.P.)",
+                "Log In as Doctor (W.I.P.)",
                 "Log In as Admin\n",
                 "Register as Patient\n"
             };
