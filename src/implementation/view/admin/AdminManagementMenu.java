@@ -2,6 +2,7 @@ package implementation.view.admin;
 
 import java.util.Scanner;
 
+import implementation.controller.AdminController;
 import utility.Input;
 import utility.UserInterface;
 
@@ -22,12 +23,16 @@ public class AdminManagementMenu {
             String input = new Input(scanner, "Enter choice: ").validate().get();
             switch (input == null ? "0" : input) {
                 case "1":
+                    AdminController.addAdmin(scanner);
                     break;
                 case "2":
+                    AdminController.findAdmin(scanner);
                     break;
                 case "3":
+                    AdminController.removeAdmin(scanner);
                     break;
                 case "4":
+                    AdminController.viewAdmins(scanner);
                     break;
                 case "5":
                     return;

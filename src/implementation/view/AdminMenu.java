@@ -3,6 +3,7 @@ package implementation.view;
 import java.util.Scanner;
 
 import implementation.model.Admin;
+import implementation.view.admin.AdminManagementMenu;
 import implementation.view.admin.DoctorManagementMenu;
 import implementation.view.admin.SpecialtyManagementMenu;
 import shared.LoginState;
@@ -22,7 +23,7 @@ public class AdminMenu {
             String[] options = {
                 "Specialty Management",
                 "Doctor Management",
-                "Admin Management (W.I.P.)",
+                "Admin Management",
                 "View Appointments (W.I.P.)", // based on specialty
                 "View Medical Records (W.I.P.)",
                 "Edit Profile (W.I.P.)\n",
@@ -40,6 +41,7 @@ public class AdminMenu {
                     DoctorManagementMenu.show(scanner);
                     break;
                 case "3":
+                    AdminManagementMenu.show(scanner);
                     break;
                 case "4":
                     break;
