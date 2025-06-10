@@ -3,6 +3,7 @@ package implementation.controller;
 import java.util.Scanner;
 
 import implementation.model.Admin;
+import shared.LoginState;
 import shared.repository.AdminRepository;
 import utility.Hasher;
 import utility.Input;
@@ -80,6 +81,7 @@ public class AdminController {
             }
 
             System.out.println();
+            System.out.println("-------------------------------------------------");
             System.out.println(foundAdmin);
 
             System.out.println();
@@ -101,6 +103,11 @@ public class AdminController {
                                     .isNotEmpty().isNumeric().validate();
                 if (_adminId.isExit()) return;
                 adminId = _adminId.getInteger();
+                if (LoginState.getLoginId() == adminId) {
+                    UserInterface.warning("You can't remove yourself!");
+                    adminId = -1;
+                    continue;
+                }
                 admin = AdminRepository.findById(adminId);
 
                 if (admin == null) {
@@ -116,6 +123,7 @@ public class AdminController {
             UserInterface.success("Successfully removed admin " + UserInterface.colorize("#" + adminId, UserInterface.YELLOW) + "!");
             UserInterface.info("Removed admin details: ");
 
+            System.out.println("-------------------------------------------------");
             System.out.println(admin);
 
             System.out.println();
@@ -126,6 +134,7 @@ public class AdminController {
     public static void viewAdmins(Scanner scanner) {
         UserInterface.update("View All Admins");
 
+        System.out.println("-------------------------------------------------");
         AdminRepository.getAll();
 
         UserInterface.enter(scanner);

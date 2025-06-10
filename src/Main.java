@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 import implementation.view.*;
 import shared.repository.AdminRepository;
+import shared.repository.AppointmentRepository;
 import shared.repository.DoctorRepository;
 import shared.repository.PatientRepository;
 import shared.repository.SpecialtyRepository;
@@ -15,6 +16,7 @@ public class Main {
         PatientRepository.load();
         DoctorRepository.load();
         AdminRepository.load();
+        AppointmentRepository.load();
         
         // initialize scanner for inputs
         Scanner scanner = new Scanner(System.in);

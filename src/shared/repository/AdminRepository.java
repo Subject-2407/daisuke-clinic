@@ -51,6 +51,7 @@ public class AdminRepository {
     }
 
     public static void load() throws IOException {
+        adminTree = new BST<>();
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;
         while ((line = reader.readLine()) != null) {
@@ -60,7 +61,7 @@ public class AdminRepository {
         reader.close();
     }
 
-    public static void removeFromFile(int targetId) throws IOException {
+    private static void removeFromFile(int targetId) throws IOException {
         File inputFile = new File(filePath);
         File tempFile = new File(tempFilePath);
 

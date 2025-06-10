@@ -1,5 +1,7 @@
 package adt;
 
+import java.util.function.Predicate;
+
 import implementation.model.interfaces.Identifiable;
 
 // Generic BST (with AVL balancing) for identifiable objects (using the 'id' field as the key)
@@ -17,19 +19,27 @@ public class BST<T extends Identifiable> {
     }
 
     private Node<T> root;
+    private int size;
 
     public BST() {
         this.root = null;
+        this.size = 0;
     }
+
+    // returns tree size
+    public int size() { return size; }
 
     // inserts a new node
     public void insert(T data) {
         root = insertRec(root, data);
     }
 
-    // recursive helper for insert method
+    // recursive helper for method above
     private Node<T> insertRec(Node<T> node, T data) {
-        if (node == null) return new Node<>(data);
+        if (node == null) {
+            size++;
+            return new Node<>(data);
+        }
 
         if (data.getId() < node.data.getId()) {
             node.left = insertRec(node.left, data);
@@ -44,12 +54,12 @@ public class BST<T extends Identifiable> {
         return balance(node);
     }
 
-    // Public method to search for a node by ID
+    // search for a node by ID
     public T search(int id) {
         return searchRec(root, id);
     }
 
-    // Recursive helper to search for an ID
+    // recursive helper for method above
     private T searchRec(Node<T> node, int id) {
         if (node == null) return null; // not found
 
@@ -58,12 +68,30 @@ public class BST<T extends Identifiable> {
         return searchRec(node.right, id);
     }
 
-    // Public method to remove a node by ID
+    // search all matching nodes by predicate
+    public Object[] searchAll(Predicate<T> predicate) {
+        LinkedList<T> matches = new LinkedList<>();
+        searchAllRec(root, predicate, matches);
+        return matches.toArray();
+    }   
+    
+    // recursive helper for method above (in order traversal)
+    private void searchAllRec(Node<T> node, Predicate<T> predicate, LinkedList<T> matches) {
+        if (node != null) {
+            searchAllRec(node.left, predicate, matches);
+            if (predicate.test(node.data)) {
+                matches.insert(node.data);
+            }
+            searchAllRec(node.right, predicate, matches);
+        }
+    }
+
+    // remove a node by ID
     public void remove(int id) {
         root = removeRec(root, id);
     }
 
-    // Recursive helper for deletion with AVL balancing
+    // recursive helper for method above
     private Node<T> removeRec(Node<T> node, int id) {
         if (node == null) return null;
 
@@ -71,15 +99,14 @@ public class BST<T extends Identifiable> {
             node.left = removeRec(node.left, id);
         } else if (id > node.data.getId()) {
             node.right = removeRec(node.right, id);
-        } else {
-            // Node with one or no child
+        } else { // node to be removed found
+            size--;
             if (node.left == null) return node.right;
             else if (node.right == null) return node.left;
 
-            // Node with two children: get inorder successor
             Node<T> minNode = getMinNode(node.right);
-            node.data = minNode.data; // replace current node data
-            node.right = removeRec(node.right, minNode.data.getId()); // delete successor
+            node.data = minNode.data;
+            node.right = removeRec(node.right, minNode.data.getId()); 
         }
 
         // Update height and balance
@@ -93,7 +120,7 @@ public class BST<T extends Identifiable> {
         return node;
     }
 
-    // balancing method for AVL
+    // AVL balancing method
     private Node<T> balance(Node<T> node) {
         int bf = getBalanceFactor(node);
 
@@ -186,29 +213,17 @@ public class BST<T extends Identifiable> {
         }
     }
 
-    public void preOrder() {
-        preOrderRec(root);
-        System.out.println();
+    public Object[] toArray() {
+        LinkedList<T> list = new LinkedList<>();
+        inOrderToArray(root, list);
+        return list.toArray();
     }
 
-    private void preOrderRec(Node<T> node) {
+    private void inOrderToArray(Node<T> node, LinkedList<T> list) {
         if (node != null) {
-            System.out.println(node.data);
-            preOrderRec(node.left);
-            preOrderRec(node.right);
-        }
-    }
-
-    public void postOrder() {
-        postOrderRec(root);
-        System.out.println();
-    }
-
-    private void postOrderRec(Node<T> node) {
-        if (node != null) {
-            postOrderRec(node.left);
-            postOrderRec(node.right);
-            System.out.println(node.data);
+            inOrderToArray(node.left, list);
+            list.insert(node.data);
+            inOrderToArray(node.right, list);
         }
     }
 }

@@ -86,7 +86,7 @@ public class LinkedList<T> {
         return null;
     }
 
-    // Find all matching Nodes by a predicate
+    // Find all matching Nodes by predicate
     @SuppressWarnings("unchecked")
     public T[] findAll(Predicate<T> predicate) {
         LinkedList<T> matches = new LinkedList<>();

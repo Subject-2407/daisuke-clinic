@@ -43,9 +43,8 @@ public class Admin implements Identifiable {
 
     @Override
     public String toString() {
-        return "-------------------------------------------------\n" +
-        "Admin " + UserInterface.colorize("#" + id, UserInterface.YELLOW) + 
-        "\n > Name: " + name + 
+        return
+        "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "] "  + name +
         "\n > Phone Number: " + phoneNumber +
         "\n-------------------------------------------------";
     }

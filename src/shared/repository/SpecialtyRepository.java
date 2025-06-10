@@ -15,7 +15,11 @@ public class SpecialtyRepository {
     private static final String filePath = "src/saves/specialties.txt";
     private static final String tempFilePath = "src/saves/temp_specialties.txt"; // for deleting purposes
 
-    public static void getAll() {
+    public static Object[] getAll() {
+        return specialtyTree.toArray();
+    }
+
+    public static void viewAll() {
         specialtyTree.inOrder();
     }
 
@@ -43,6 +47,14 @@ public class SpecialtyRepository {
         }
     }
 
+    protected static void resetSpecialtiesAvailableDoctors() {
+        Object[] specialties = specialtyTree.toArray();
+        for (Object obj : specialties) {
+            Specialty specialty = (Specialty) obj;
+            specialty.setAvailableDoctors(0);
+        }
+    }
+
     private static void saveToFile(Specialty specialty) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
         writer.write(specialty.toFileString());
@@ -51,6 +63,7 @@ public class SpecialtyRepository {
     }
 
     public static void load() throws IOException {
+        specialtyTree = new BST<>();
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;
         while ((line = reader.readLine()) != null) {
@@ -60,7 +73,7 @@ public class SpecialtyRepository {
         reader.close();
     }
 
-    public static void removeFromFile(int targetId) throws IOException {
+    private static void removeFromFile(int targetId) throws IOException {
         File inputFile = new File(filePath);
         File tempFile = new File(tempFilePath);
 

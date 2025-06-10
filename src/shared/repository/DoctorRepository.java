@@ -6,15 +6,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.Predicate;
 
 import adt.BST;
 import implementation.model.Doctor;
+import implementation.model.Specialty;
 
 public class DoctorRepository {
     private static BST<Doctor> doctorTree = new BST<>();
     private static final String filePath = "src/saves/doctors.txt";
     private static final String tempFilePath = "src/saves/temp_doctors.txt"; // for deleting purposes
 
+    public static int getRepositorySize() { return doctorTree.size(); }
+    
     public static void getAll() {
         doctorTree.inOrder();
     }
@@ -27,6 +31,10 @@ public class DoctorRepository {
             System.err.println("Failed to save doctor data: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public static Object[] findAll(Predicate<Doctor> predicate) {
+        return doctorTree.searchAll(predicate);
     }
 
     public static Doctor findById(int id) {
@@ -51,6 +59,7 @@ public class DoctorRepository {
     }
 
     public static void load() throws IOException {
+        SpecialtyRepository.resetSpecialtiesAvailableDoctors(); // do not remove
         doctorTree = new BST<>();
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;
@@ -61,7 +70,7 @@ public class DoctorRepository {
         reader.close();
     }
 
-    public static void removeFromFile(int targetId) throws IOException {
+    private static void removeFromFile(int targetId) throws IOException {
         File inputFile = new File(filePath);
         File tempFile = new File(tempFilePath);
 
@@ -70,11 +79,15 @@ public class DoctorRepository {
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))
         ) {
             String line;
+            SpecialtyRepository.resetSpecialtiesAvailableDoctors();
             while ((line = reader.readLine()) != null) {
                 Doctor doctor = Doctor.fromFileString(line);
                 if (doctor.getId() != targetId) {
                     writer.write(doctor.toFileString());
                     writer.newLine();
+                } else {
+                    Specialty removedDoctorSpecialty = SpecialtyRepository.findById(doctor.getSpecialtyId());
+                    removedDoctorSpecialty.setAvailableDoctors(removedDoctorSpecialty.getAvailableDoctors() - 1);
                 }
             }
         }

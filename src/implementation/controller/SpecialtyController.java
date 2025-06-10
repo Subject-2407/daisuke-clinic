@@ -72,7 +72,7 @@ public class SpecialtyController {
             }
             
             System.out.println();
-            System.out.println(foundSpecialty + "\n  - Appointment Slots: " + foundSpecialty.getQueue().size() + " of " + foundSpecialty.getMaxSlots() + " available.");
+            System.out.println(foundSpecialty);
             
             System.out.println();
             UserInterface.enter(scanner);
@@ -111,7 +111,7 @@ public class SpecialtyController {
     public static void viewSpecialties(Scanner scanner) {
         UserInterface.update("View All Specialties");
 
-        SpecialtyRepository.getAll();
+        SpecialtyRepository.viewAll();
 
         UserInterface.enter(scanner);
         return;

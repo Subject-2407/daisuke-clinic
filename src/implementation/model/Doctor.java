@@ -4,7 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.StringJoiner;
 
-import adt.LinkedList;
+import adt.BST;
 import adt.Map;
 import adt.PriorityQueue;
 import implementation.model.interfaces.Identifiable;
@@ -20,7 +20,7 @@ public class Doctor implements Identifiable {
     private String phoneNumber;
     private Map<DayOfWeek, WorkingHours> workSchedule;
     private PriorityQueue<Appointment> upcomingAppointments;
-    private LinkedList<Appointment> appointmentHistory;
+    private BST<Appointment> appointmentHistory;
 
     public Doctor(int id, String password, String name, int specialtyId, String phoneNumber) {
         this.id = id;
@@ -30,7 +30,7 @@ public class Doctor implements Identifiable {
         this.phoneNumber = phoneNumber;
         this.workSchedule = new Map<>();
         this.upcomingAppointments = new PriorityQueue<>();
-        this.appointmentHistory = new LinkedList<>();
+        this.appointmentHistory = new BST<>();
     }
 
     public boolean validatePassword(String password) { return Hasher.hash(password).equals(this.password); }
@@ -39,11 +39,14 @@ public class Doctor implements Identifiable {
     public String getPhoneNumber() { return phoneNumber; }
     public Map<DayOfWeek, WorkingHours> getWorkSchedule() { return workSchedule; }
     public PriorityQueue<Appointment> getUpcomingAppointments() { return upcomingAppointments; }
-    public LinkedList<Appointment> getAppointmentHistory() { return appointmentHistory; }
+    public BST<Appointment> getAppointmentHistory() { return appointmentHistory; }
 
     public void setWorkSchedule(Map<DayOfWeek, WorkingHours> schedule) { this.workSchedule = schedule; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setPassword(String password) { this.password = Hasher.hash(password); }
+    public void enqueueAppointment(Appointment appointment) { this.upcomingAppointments.enqueue(appointment, appointment.getTime()); }
+    public void dequeueAppointment() { this.upcomingAppointments.dequeue(); }
+    public void addAppointmentHistory(Appointment appointment) { this.appointmentHistory.insert(appointment); }
 
     public String toFileString() {
         Object[] scheduleKeys = workSchedule.keySet();
@@ -84,6 +87,11 @@ public class Doctor implements Identifiable {
             parts[4]
         );
 
+        Specialty specialty = SpecialtyRepository.findById(doctor.getSpecialtyId());
+        if (specialty != null) {
+            specialty.setAvailableDoctors(specialty.getAvailableDoctors() + 1);
+        }
+
         doctor.setWorkSchedule(schedule);
 
         return doctor;
@@ -115,8 +123,8 @@ public class Doctor implements Identifiable {
             }
         }
 
-        return "-------------------------------------------------\n" +
-        "Dr. " + name + " (" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + ")" +
+        return
+        "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " Dr. " + name +
         "\n > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
         "\n > Phone Number: " + phoneNumber + 
         "\n > Work Schedule: " + workScheduleString + 

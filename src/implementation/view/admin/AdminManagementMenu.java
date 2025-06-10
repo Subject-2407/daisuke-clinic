@@ -14,7 +14,7 @@ public class AdminManagementMenu {
                 "Add an Admin",
                 "Find an Admin by ID",
                 "Remove an Admin",
-                "View all Admins\n",
+                "View All Admins\n",
                 "Return to Main Menu"
             };
             UserInterface.createOptions(options);

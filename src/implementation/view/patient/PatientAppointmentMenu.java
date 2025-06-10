@@ -1,21 +1,21 @@
-package implementation.view.admin;
+package implementation.view.patient;
 
 import java.util.Scanner;
 
-import implementation.controller.DoctorController;
+import implementation.controller.AppointmentController;
+import implementation.model.Patient;
 import utility.Input;
 import utility.UserInterface;
 
-public class DoctorManagementMenu {
-    public static void show(Scanner scanner) {
+public class PatientAppointmentMenu {
+    public static void show(Scanner scanner, Patient profile) {
         while (true) {
-            UserInterface.update("Doctor Management");
+            UserInterface.update("Appointments");
             String[] options = {
-                "Add a Doctor",
-                "Find a Doctor by ID",
-                "Find Doctor(s) by Name",
-                "Remove a Doctor",
-                "View All Doctors\n",
+                "Book an Appointment",
+                "View Upcoming Appointments (" + profile.getUpcomingAppointments().size() + ")",
+                "View Appointment History",
+                "Find an Appointment by ID\n",
                 "Return to Main Menu"
             };
             UserInterface.createOptions(options);
@@ -24,21 +24,17 @@ public class DoctorManagementMenu {
             String input = new Input(scanner, "Enter choice: ").validate().get();
             switch (input == null ? "0" : input) {
                 case "1":
-                    DoctorController.addDoctor(scanner);
+                    AppointmentController.addAppointment(scanner);
                     break;
                 case "2":
-                    DoctorController.findDoctor(scanner);
+                    AppointmentController.getUpcomingAppointments(scanner, profile.getUpcomingAppointments());
                     break;
                 case "3":
-                    DoctorController.findDoctorsByName(scanner);
+                    AppointmentController.getAppointmentHistory(scanner, profile.getAppointmentHistory());
                     break;
                 case "4":
-                    DoctorController.removeDoctor(scanner);
                     break;
                 case "5":
-                    DoctorController.viewDoctors(scanner);
-                    break;
-                case "6":
                     return;
                 case "0":
                     System.exit(0);

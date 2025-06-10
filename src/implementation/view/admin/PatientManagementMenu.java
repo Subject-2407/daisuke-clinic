@@ -2,20 +2,20 @@ package implementation.view.admin;
 
 import java.util.Scanner;
 
-import implementation.controller.DoctorController;
+import implementation.controller.PatientController;
 import utility.Input;
 import utility.UserInterface;
 
-public class DoctorManagementMenu {
+public class PatientManagementMenu {
     public static void show(Scanner scanner) {
         while (true) {
-            UserInterface.update("Doctor Management");
+            UserInterface.update("Patient Management");
             String[] options = {
-                "Add a Doctor",
-                "Find a Doctor by ID",
-                "Find Doctor(s) by Name",
-                "Remove a Doctor",
-                "View All Doctors\n",
+                "Add a Patient",
+                "Find a Patient by ID",
+                "Find Patient(s) by Name",
+                "Remove a Patient",
+                "View All Patients\n",
                 "Return to Main Menu"
             };
             UserInterface.createOptions(options);
@@ -24,19 +24,19 @@ public class DoctorManagementMenu {
             String input = new Input(scanner, "Enter choice: ").validate().get();
             switch (input == null ? "0" : input) {
                 case "1":
-                    DoctorController.addDoctor(scanner);
+                    PatientController.addPatient(scanner);
                     break;
                 case "2":
-                    DoctorController.findDoctor(scanner);
+                    PatientController.findPatient(scanner);
                     break;
                 case "3":
-                    DoctorController.findDoctorsByName(scanner);
+                    PatientController.findPatientsByName(scanner);
                     break;
                 case "4":
-                    DoctorController.removeDoctor(scanner);
+                    PatientController.removePatient(scanner);
                     break;
                 case "5":
-                    DoctorController.viewDoctors(scanner);
+                    PatientController.viewPatients(scanner);
                     break;
                 case "6":
                     return;
