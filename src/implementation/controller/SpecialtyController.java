@@ -13,12 +13,12 @@ public class SpecialtyController {
             UserInterface.update("Add a Specialty");
             System.out.println("*) Enter 0 to exit\n");
 
-            int specialtyId = -1;
+            int specialtyId = -1, specialtyMaxSlots;
             String specialtyName;
 
             // specialty id input
             while (specialtyId == -1) {
-                Input _specialtyId = new Input(scanner, "Enter specialty ID (in number): ")
+                Input _specialtyId = new Input(scanner, "Enter specialty's ID (in number): ")
                                         .isNotEmpty().isNumeric().isPositiveNumber().validate();
                 if (_specialtyId.isExit()) return;
                 specialtyId = _specialtyId.getInteger();
@@ -30,12 +30,18 @@ public class SpecialtyController {
             }
 
             // specialty name input
-            Input _specialtyName = new Input(scanner, "Enter specialty name: ")
+            Input _specialtyName = new Input(scanner, "Enter specialty's name: ")
                                     .isNotEmpty().isAlphabetic().validate();
             if (_specialtyName.isExit()) return;
             specialtyName = _specialtyName.get();
 
-            Specialty newSpecialty = new Specialty(specialtyId, specialtyName);
+            // specialty max slots input
+            Input _specialtyMaxSlots = new Input(scanner, "Enter specialty's maximum number of appointments allowed: ")
+                                            .isNotEmpty().isNumeric().isPositiveNumber().validate();
+            if (_specialtyMaxSlots.isExit()) return;
+            specialtyMaxSlots = _specialtyMaxSlots.getInteger();
+
+            Specialty newSpecialty = new Specialty(specialtyId, specialtyName, specialtyMaxSlots);
             SpecialtyRepository.add(newSpecialty);
 
             System.out.println();
@@ -54,7 +60,7 @@ public class SpecialtyController {
 
             // specialty id input
             while (foundSpecialty == null) {
-                Input _specialtyId = new Input(scanner, "Enter specialty ID (in number): ")
+                Input _specialtyId = new Input(scanner, "Enter specialty's ID (in number): ")
                                         .isNotEmpty().isNumeric().validate();
                 if (_specialtyId.isExit()) return;
                 int specialtyId = _specialtyId.getInteger();
@@ -66,7 +72,7 @@ public class SpecialtyController {
             }
             
             System.out.println();
-            UserInterface.info("Details: " + foundSpecialty);
+            System.out.println(foundSpecialty + "\n  - Appointment Slots: " + foundSpecialty.getQueue().size() + " of " + foundSpecialty.getMaxSlots() + " available.");
             
             System.out.println();
             UserInterface.enter(scanner);
@@ -82,7 +88,7 @@ public class SpecialtyController {
 
             // specialty id input
             while (specialtyId == -1) {
-                Input _specialtyId = new Input(scanner, "Enter specialty ID (in number): ")
+                Input _specialtyId = new Input(scanner, "Enter specialty's ID (in number): ")
                                         .isNotEmpty().isNumeric().validate();
                 if (_specialtyId.isExit()) return;
                 specialtyId = _specialtyId.getInteger();

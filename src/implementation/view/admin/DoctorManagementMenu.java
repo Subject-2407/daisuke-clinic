@@ -29,6 +29,7 @@ public class DoctorManagementMenu {
                     DoctorController.findDoctor(scanner);
                     break;
                 case "3":
+                    DoctorController.removeDoctor(scanner);
                     break;
                 case "4":
                     DoctorController.viewDoctors(scanner);

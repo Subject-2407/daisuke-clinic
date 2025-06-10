@@ -1,10 +1,13 @@
 package implementation.controller;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Scanner;
 
+import adt.Map;
 import implementation.model.Doctor;
-import implementation.model.Specialty;
+import implementation.model.WorkingHours;
 import shared.repository.DoctorRepository;
 import shared.repository.SpecialtyRepository;
 import utility.Hasher;
@@ -17,9 +20,9 @@ public class DoctorController {
             UserInterface.update("Add a Doctor");
             System.out.println("*) Enter 0 to exit\n");
 
-            int doctorId = -1;
+            int doctorId = -1, doctorSpecialtyId = -1;
             String doctorPassword, doctorName, doctorPhoneNumber;
-            Specialty doctorSpecialty = null;
+            Map<DayOfWeek, WorkingHours> doctorWorkingSchedule = new Map<>();
 
             // doctor id input
             while (doctorId == -1) {
@@ -42,15 +45,14 @@ public class DoctorController {
             doctorName = _doctorName.get();
 
             // doctor specialty input
-            while (doctorSpecialty == null) {
+            while (doctorSpecialtyId == -1) {
                 Input _doctorSpecialtyId = new Input(scanner, "Enter doctor's specialty (in ID): ")
                                                 .isNotEmpty().isNumeric().validate();
                 if (_doctorSpecialtyId.isExit()) return;
-                int doctorSpecialtyId = _doctorSpecialtyId.getInteger();
-                doctorSpecialty = SpecialtyRepository.findById(doctorSpecialtyId);
+                doctorSpecialtyId = _doctorSpecialtyId.getInteger();
 
                 // if specialty does not exist
-                if (doctorSpecialty == null) {
+                if (SpecialtyRepository.findById(doctorSpecialtyId) == null) {
                     UserInterface.warning("Specialty not found!");
                 }
             }
@@ -67,7 +69,65 @@ public class DoctorController {
             if (_doctorPassword.isExit()) return;
             doctorPassword = Hasher.hash(_doctorPassword.get());
 
-            Doctor newDoctor = new Doctor(doctorId, doctorPassword, doctorName, doctorSpecialty, doctorPhoneNumber);
+            System.out.println();
+
+            // doctor work schedule
+            System.out.println("Choose schedule type for doctor: ");
+            System.out.println("1. 5-day workweek (Mon-Fri 08:00 - 17:00)");
+            System.out.println("2. Custom working days and hours");
+            scheduleLoop: while (true) {
+                Input scheduleType = new Input(scanner, "Enter choice: ")
+                                        .isNotEmpty().isNumeric().validate();
+                if (scheduleType.isExit()) return;
+                int type = scheduleType.getInteger();
+
+                if (type == 1) {
+                    doctorWorkingSchedule.put(DayOfWeek.MONDAY, new WorkingHours(LocalTime.of(8, 0), LocalTime.of(17, 0)));
+                    doctorWorkingSchedule.put(DayOfWeek.TUESDAY, new WorkingHours(LocalTime.of(8, 0), LocalTime.of(17, 0)));
+                    doctorWorkingSchedule.put(DayOfWeek.WEDNESDAY, new WorkingHours(LocalTime.of(8, 0), LocalTime.of(17, 0)));
+                    doctorWorkingSchedule.put(DayOfWeek.THURSDAY, new WorkingHours(LocalTime.of(8, 0), LocalTime.of(17, 0)));
+                    doctorWorkingSchedule.put(DayOfWeek.FRIDAY, new WorkingHours(LocalTime.of(8, 0), LocalTime.of(17, 0)));
+                    break;
+                } else if (type == 2) {
+                    System.out.println();
+                    boolean hasAtleastOneWorkingDay = false;
+                    while (!hasAtleastOneWorkingDay) {
+                        for (DayOfWeek day : DayOfWeek.values()) {
+                            while (true) {
+                                String dayString = day.toString();
+                                String capitalizedDay = dayString.substring(0, 1).toUpperCase() + dayString.substring(1).toLowerCase();
+                                Input hours = new Input(scanner, "Enter working hours for " + capitalizedDay + " (format: HH:MM-HH:MM, type 'n' for off-day): ").isNotEmpty().validate();
+                                if (hours.isExit()) return;
+                                String hoursInput = hours.get();
+                                if (hoursInput.toLowerCase().equals("n")) {
+                                    break;
+                                } else {
+                                    try {
+                                        String[] times = hoursInput.split("-");
+                                        LocalTime startTime = LocalTime.parse(times[0]);
+                                        LocalTime endTime = LocalTime.parse(times[1]);
+                                        doctorWorkingSchedule.put(day, new WorkingHours(startTime, endTime));
+                                        hasAtleastOneWorkingDay = true;
+                                        break;
+                                    } catch (Exception e) {
+                                        UserInterface.warning("Invalid format! Example: 08:00-17:00");
+                                    }
+                                }
+                            }
+                            
+                        }
+
+                        if (!hasAtleastOneWorkingDay) {
+                            UserInterface.warning("You must enter working hours for at least one day!");
+                        } else break scheduleLoop;
+                    }
+                } else {
+                    UserInterface.warning("Invalid choice!");
+                }
+            }
+
+            Doctor newDoctor = new Doctor(doctorId, doctorPassword, doctorName, doctorSpecialtyId, doctorPhoneNumber);
+            newDoctor.setWorkSchedule(doctorWorkingSchedule);
             DoctorRepository.add(newDoctor);
 
             System.out.println();
@@ -101,6 +161,44 @@ public class DoctorController {
             System.out.println();
             System.out.println(foundDoctor);
 
+            System.out.println();
+            UserInterface.enter(scanner);
+        }
+    }
+
+    public static void removeDoctor(Scanner scanner) {
+        reloadRepository();
+        while (true) {
+            UserInterface.update("Remove a Doctor");
+            System.out.println("*) Enter 0 to exit\n");
+
+            int doctorId = -1;
+            Doctor doctor = null;
+
+            // doctor id input
+            while (doctorId == -1) {
+                Input _doctorId = new Input(scanner, "Enter doctor's ID (in number): ")
+                                    .isNotEmpty().isNumeric().validate();
+                if (_doctorId.isExit()) return;
+                doctorId = _doctorId.getInteger();
+                doctor = DoctorRepository.findById(doctorId);
+
+                if (doctor == null) {
+                    UserInterface.warning("Can't find a doctor with this ID!");
+                    doctorId = -1;
+                }
+            }
+
+            DoctorRepository.remove(doctorId);
+
+            System.out.println();
+
+            UserInterface.success("Successfully removed doctor " + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + "!");
+            UserInterface.info("Removed doctor details: ");
+
+            System.out.println(doctor);
+
+            System.out.println();
             UserInterface.enter(scanner);
         }
     }

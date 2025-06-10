@@ -13,7 +13,7 @@ import implementation.model.Specialty;
 public class SpecialtyRepository {
     private static BST<Specialty> specialtyTree = new BST<>();
     private static final String filePath = "src/saves/specialties.txt";
-    private static final String tempFilePath = "src/saves/temp_specialties.txt";
+    private static final String tempFilePath = "src/saves/temp_specialties.txt"; // for deleting purposes
 
     public static void getAll() {
         specialtyTree.inOrder();

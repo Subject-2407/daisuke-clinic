@@ -7,7 +7,7 @@ import utility.UserInterface;
 
 public class Patient implements Identifiable {
     private int id;
-    private String password; // must be hashed
+    private String password; // should be hashed
     private String name;
     private int age;
     private String address;
@@ -38,11 +38,11 @@ public class Patient implements Identifiable {
     public void addMedicalRecord(MedicalRecord record) { this.medicalRecords.insert(record); }
     public void setPassword(String password) { this.password = Hasher.hash(password); }
 
-    public String toFileString() { // wip
+    public String toFileString() {
         return id + "|" + password + "|" + name + "|" + age + "|" + address + "|" + phoneNumber;
     }
 
-    public static Patient fromFileString(String line) { // wip
+    public static Patient fromFileString(String line) {
         String[] parts = line.split("\\|");
         return new Patient(
             Integer.parseInt(parts[0]),

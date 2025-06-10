@@ -2,6 +2,7 @@ package shared.repository;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import implementation.model.Doctor;
 public class DoctorRepository {
     private static BST<Doctor> doctorTree = new BST<>();
     private static final String filePath = "src/saves/doctors.txt";
+    private static final String tempFilePath = "src/saves/temp_doctors.txt"; // for deleting purposes
 
     public static void getAll() {
         doctorTree.inOrder();
@@ -33,6 +35,12 @@ public class DoctorRepository {
 
     public static void remove(int id) {
         doctorTree.remove(id);
+        try {
+            removeFromFile(id);
+        } catch (IOException e) {
+            System.err.println("Failed to remove doctor data: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private static void saveToFile(Doctor doctor) throws IOException {
@@ -51,5 +59,31 @@ public class DoctorRepository {
             doctorTree.insert(doctor);
         }
         reader.close();
+    }
+
+    public static void removeFromFile(int targetId) throws IOException {
+        File inputFile = new File(filePath);
+        File tempFile = new File(tempFilePath);
+
+        try (
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))
+        ) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Doctor doctor = Doctor.fromFileString(line);
+                if (doctor.getId() != targetId) {
+                    writer.write(doctor.toFileString());
+                    writer.newLine();
+                }
+            }
+        }
+
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete original file");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temporary file");
+        }
     }
 }

@@ -5,7 +5,7 @@ import utility.Hasher;
 
 public class Admin implements Identifiable {
     private int id;
-    private String password;
+    private String password; // should be hashed
     private String name;
 
     public Admin(int id, String password, String name) {
