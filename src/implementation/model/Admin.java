@@ -21,6 +21,8 @@ public class Admin implements Identifiable {
     public String getName() { return name; }
     public String getPhoneNumber() { return phoneNumber; }
 
+    public void setName(String name) { this.name = name; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setPassword(String password) { this.password = Hasher.hash(password); }
 
     public String toFileString() {
@@ -44,8 +46,8 @@ public class Admin implements Identifiable {
     @Override
     public String toString() {
         return
-        "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "] "  + name +
-        "\n > Phone Number: " + phoneNumber +
-        "\n-------------------------------------------------";
+        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "] "  + name +
+        "\n║ > Phone Number: " + phoneNumber +
+        "\n╠════════════════════════════════════════════════";
     }
 }

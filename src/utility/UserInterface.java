@@ -5,11 +5,14 @@ import java.util.Scanner;
 public class UserInterface {
     private static final String TITLE = "Daisuke Clinic";
     // color ansi codes
-    public static final String GREEN = "\u001B[92m";
-    public static final String BLUE = "\u001B[1;34m";
-    public static final String YELLOW = "\u001B[33m";
-    private static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[91m";
+    public static final String GREEN = "\u001B[92m";
+    public static final String BRIGHT_BLUE = "\u001B[1;34m";
+    public static final String BLUE = "\u001B[38;2;91;171;255m";
+    public static final String ORANGE = "\u001B[38;5;208m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String PINK = "\u001B[95m";
+    private static final String RESET = "\u001B[0m";
 
     // asks user to enter to update the UI
     public static void enter(Scanner scanner) {
@@ -32,7 +35,7 @@ public class UserInterface {
                 System.out.flush(); 
             }
             // program header
-            System.out.println(colorize("========== ", BLUE) + TITLE + colorize(" ==========\n", BLUE));
+            System.out.println(colorize("========== ", BRIGHT_BLUE) + TITLE + colorize(" ==========\n", BRIGHT_BLUE));
         } catch (Exception e) {
             System.out.println("Error clearing console.");
         }
@@ -49,7 +52,7 @@ public class UserInterface {
                 System.out.flush(); 
             }
             // program header
-            System.out.println(colorize("========== ", BLUE) + TITLE + " (" + header + ")" + colorize(" ==========\n", BLUE));
+            System.out.println(colorize("========== ", BRIGHT_BLUE) + TITLE + " (" + header + ")" + colorize(" ==========\n", BRIGHT_BLUE));
         } catch (Exception e) {
             System.out.println("Error clearing console.");
         }

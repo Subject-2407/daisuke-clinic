@@ -6,6 +6,7 @@ import implementation.model.Patient;
 import implementation.model.enums.Gender;
 import shared.LoginState;
 import shared.enums.Role;
+import shared.repository.MedicalRecordRepository;
 import shared.repository.PatientRepository;
 import utility.Hasher;
 import utility.Input;
@@ -92,6 +93,7 @@ public class PatientController {
 
             Patient newPatient = new Patient(patientId, patientPassword, patientName, patientGender, patientAge, patientAddress, patientPhoneNumber);
             PatientRepository.add(newPatient);
+            MedicalRecordRepository.add(newPatient.getMedicalRecord());
 
             System.out.println();
 
@@ -128,7 +130,8 @@ public class PatientController {
             } 
 
             System.out.println();
-            System.out.println("-------------------------------------------------");
+            UserInterface.info("Patient details: ");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(foundPatient);
 
             System.out.println();
@@ -146,14 +149,14 @@ public class PatientController {
                                     .isNotEmpty().isAlphabetic().validate();
             if (_patientName.isExit()) return;
 
-            Object[] patients = PatientRepository.findAll(p -> p.getName().toLowerCase().equals(_patientName.get().toString().toLowerCase()));
+            Object[] patients = PatientRepository.findAll(p -> p.getName().toLowerCase().contains(_patientName.get().toString().toLowerCase()));
 
             System.out.println();
             UserInterface.info("Result: ");
             if (patients.length == 0) {
                 System.out.println("No patient with that name.");
             } else {
-                System.out.println("-------------------------------------------------");
+                System.out.println("╔════════════════════════════════════════════════");
                 for (Object obj : patients) {
                     Patient patient = (Patient) obj;
                     System.out.println(patient);
@@ -194,7 +197,7 @@ public class PatientController {
             UserInterface.success("Successfully removed patient " + UserInterface.colorize("#" + patientId, UserInterface.YELLOW) + "!");
             UserInterface.info("Removed patient details: ");
 
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(patient);
 
             System.out.println();
@@ -208,12 +211,99 @@ public class PatientController {
         if (PatientRepository.getRepositorySize() == 0) {
             System.out.println("No patients available.");
         } else {
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             PatientRepository.getAllInorder();
         }
         
 
         UserInterface.enter(scanner);
         return;
+    }
+
+    public static void editProfile(Scanner scanner, Patient profile) {
+        while (true) {
+            UserInterface.update("Edit Profile");
+            System.out.println("╔════════════════════════════════════════════════");
+            System.out.println(profile);
+            System.out.println();
+            String[] options = {
+                "Edit Name",
+                "Edit Age",
+                "Edit Address",
+                "Edit Phone Number",
+                "Change Password\n",
+            };
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            Input _editProfileChoice = new Input(scanner, "Enter choice: ")
+                                            .isNotEmpty().validate();
+            if (_editProfileChoice.isExit()) return;
+            String editProfileChoice = _editProfileChoice.get();
+
+            switchLoop: switch (editProfileChoice) {
+                case "1":
+                    Input _editName = new Input(scanner, "Enter new name: ")
+                                            .isNotEmpty().isAlphabetic().validate();
+                    if (_editName.isExit()) break;
+                    String newName = _editName.get();
+                    profile.setName(newName);
+                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setName(newName); return p;});
+                    UserInterface.success("Name successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "2":
+                    Input _editAge = new Input(scanner, "Enter new age: ")
+                                            .isNotEmpty().isNumeric().validate();
+                    if (_editAge.isExit()) break;
+                    int newAge = _editAge.getInteger();
+                    profile.setAge(newAge);
+                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setAge(newAge); return p;});
+                    UserInterface.success("Age successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "3":
+                    Input _editAddress = new Input(scanner, "Enter new address: ")
+                                            .isNotEmpty().validate();
+                    if (_editAddress.isExit()) break;
+                    String newAddress = _editAddress.get();
+                    profile.setAddress(newAddress);
+                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setAddress(newAddress); return p;});
+                    UserInterface.success("Address successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "4":
+                    Input _editPhoneNumber = new Input(scanner, "Enter new phone number: ")
+                                            .isNotEmpty().isValidPhoneNumber().validate();
+                    if (_editPhoneNumber.isExit()) break;
+                    String newPhoneNumber = _editPhoneNumber.get();
+                    profile.setPhoneNumber(newPhoneNumber);
+                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setPhoneNumber(newPhoneNumber); return p;});
+                    UserInterface.success("Phone number successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "5":
+                    while (true) {
+                        Input _currentPassword = new Input(scanner, "Enter your current password: ")
+                                                .isNotEmpty().validate();
+                        if (_currentPassword.isExit()) break switchLoop;
+                        if (!profile.validatePassword(_currentPassword.get())) {
+                            UserInterface.warning("Invalid password!");
+                        } else break;
+                    }
+                    Input _changePassword = new Input(scanner, "Enter new password (must be alphanumeric): ")
+                                                .isNotEmpty().isAlphanumeric().validate();
+                    if (_changePassword.isExit()) break;
+                    String newPassword = _changePassword.get();
+                    profile.setPassword(newPassword);
+                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setPassword(newPassword); return p;});
+                    UserInterface.success("Password successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                default:
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+            }
+        }
     }
 }

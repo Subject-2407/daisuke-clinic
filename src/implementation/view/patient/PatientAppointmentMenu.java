@@ -13,9 +13,11 @@ public class PatientAppointmentMenu {
             UserInterface.update("Appointments");
             String[] options = {
                 "Book an Appointment",
+                "View Next Appointment",
                 "View Upcoming Appointments (" + profile.getUpcomingAppointments().size() + ")",
                 "View Appointment History",
-                "Find an Appointment by ID\n",
+                "Find an Appointment by ID",
+                "Cancel an Appointment\n",
                 "Return to Main Menu"
             };
             UserInterface.createOptions(options);
@@ -27,14 +29,21 @@ public class PatientAppointmentMenu {
                     AppointmentController.addAppointment(scanner);
                     break;
                 case "2":
-                    AppointmentController.getUpcomingAppointments(scanner, profile.getUpcomingAppointments());
+                    AppointmentController.getPatientNextAppointment(scanner, profile.getUpcomingAppointments());
                     break;
                 case "3":
-                    AppointmentController.getAppointmentHistory(scanner, profile.getAppointmentHistory());
+                    AppointmentController.getUpcomingAppointments(scanner, profile.getUpcomingAppointments());
                     break;
                 case "4":
+                    AppointmentController.getAppointmentHistory(scanner, profile.getAppointmentHistory());
                     break;
                 case "5":
+                    AppointmentController.getPatientAppointmentById(scanner, profile.getUpcomingAppointments(), profile.getAppointmentHistory());
+                    break;
+                case "6":
+                    AppointmentController.cancelAppointment(scanner, profile.getUpcomingAppointments(), profile.getAppointmentHistory());
+                    break;
+                case "7":
                     return;
                 case "0":
                     System.exit(0);

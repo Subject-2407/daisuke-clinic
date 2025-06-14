@@ -2,7 +2,10 @@ package implementation.view;
 
 import java.util.Scanner;
 
+import implementation.controller.AdminController;
 import implementation.controller.DoctorController;
+import implementation.controller.MedicalRecordController;
+import implementation.controller.PatientController;
 import implementation.controller.SpecialtyController;
 import implementation.model.Patient;
 import implementation.view.patient.PatientAppointmentMenu;
@@ -22,7 +25,7 @@ public class PatientMenu {
 
             String[] options = {
                 "Appointments",
-                "Medical Records\n",
+                "My Medical Record\n",
                 "View Available Specialties",
                 "View Doctor(s) by Specialty",
                 "Find Doctor(s) by Name\n",
@@ -40,6 +43,7 @@ public class PatientMenu {
                     PatientAppointmentMenu.show(scanner, profile);
                     break;
                 case "2":
+                    MedicalRecordController.viewMedicalRecord(scanner, profile.getMedicalRecord());
                     break;
                 case "3":
                     SpecialtyController.viewSpecialties(scanner);
@@ -51,8 +55,10 @@ public class PatientMenu {
                     DoctorController.findDoctorsByName(scanner);
                     break;
                 case "6":
+                    PatientController.editProfile(scanner, profile);
                     break;
                 case "7":
+                    AdminController.viewAdmins(scanner);
                     break;
                 case "8":
                     LoginState.logout();

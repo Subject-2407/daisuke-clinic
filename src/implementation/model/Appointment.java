@@ -5,8 +5,11 @@ import java.time.format.DateTimeFormatter;
 
 import implementation.model.enums.AppointmentStatus;
 import implementation.model.interfaces.Identifiable;
+import shared.LoginState;
+import shared.enums.Role;
 import shared.repository.DoctorRepository;
 import shared.repository.PatientRepository;
+import shared.repository.SpecialtyRepository;
 import utility.UserInterface;
 
 public class Appointment implements Identifiable {
@@ -14,26 +17,23 @@ public class Appointment implements Identifiable {
     private int specialtyId;
     private int patientId;
     private int doctorId;
-    private String presentingComplaints;
     private LocalDateTime time;
     private AppointmentStatus status;
 
-    public Appointment(int id, int specialtyId, int patientId, int doctorId, String presentingComplaints, LocalDateTime time) {
+    public Appointment(int id, int specialtyId, int patientId, int doctorId, LocalDateTime time) {
         this.id = id;
         this.specialtyId = specialtyId;
         this.patientId = patientId;
         this.doctorId = doctorId;
-        this.presentingComplaints = presentingComplaints;
         this.time = time;
         this.status = AppointmentStatus.SCHEDULED;
     }
 
-    public Appointment(int id, int specialtyId, int patientId, int doctorId, String presentingComplaints, LocalDateTime time, AppointmentStatus status) {
+    public Appointment(int id, int specialtyId, int patientId, int doctorId, LocalDateTime time, AppointmentStatus status) {
         this.id = id;
         this.specialtyId = specialtyId;
         this.patientId = patientId;
         this.doctorId = doctorId;
-        this.presentingComplaints = presentingComplaints;
         this.time = time;
         this.status = status;
     }
@@ -41,7 +41,6 @@ public class Appointment implements Identifiable {
     public int getSpecialtyId() { return specialtyId; }
     public int getPatientId() { return patientId; }
     public int getDoctorId() { return doctorId; }
-    public String getPresentingComplaints() { return presentingComplaints; }
     public LocalDateTime getTime() { return time; }
     public AppointmentStatus getStatus() { return status; }
 
@@ -68,12 +67,12 @@ public class Appointment implements Identifiable {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         String formattedDateTime = time.format(formatter);
 
-        return id + "|" + specialtyId + "|" + patientId + "|" + doctorId + "|" + presentingComplaints + "|" + formattedDateTime + "|" + statusNumber;
+        return id + "|" + specialtyId + "|" + patientId + "|" + doctorId + "|" + formattedDateTime + "|" + statusNumber;
     }
 
     public static Appointment fromFileString(String line) {
         String[] parts = line.split("\\|");
-        int statusNumber = Integer.parseInt(parts[6]);
+        int statusNumber = Integer.parseInt(parts[5]);
         AppointmentStatus appointmentStatus;
         switch (statusNumber) {
             case 1:
@@ -97,8 +96,7 @@ public class Appointment implements Identifiable {
             Integer.parseInt(parts[1]),
             Integer.parseInt(parts[2]),
             Integer.parseInt(parts[3]),
-            parts[4],
-            LocalDateTime.parse(parts[5]),
+            LocalDateTime.parse(parts[4]),
             appointmentStatus
         );
     }
@@ -110,7 +108,14 @@ public class Appointment implements Identifiable {
     public String toString() {
         Patient patient = PatientRepository.findById(patientId);
         Doctor doctor = DoctorRepository.findById(doctorId);
+        Specialty specialty = SpecialtyRepository.findById(specialtyId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
+
+        if (status == AppointmentStatus.SCHEDULED) {
+            if (time.equals(LocalDateTime.now()) || LocalDateTime.now().isAfter(time)) {
+                this.setStatus(AppointmentStatus.ONGOING);
+            }
+        }
 
         String statusString = "";
         switch (status) {
@@ -123,19 +128,25 @@ public class Appointment implements Identifiable {
                 statusString = UserInterface.colorize("CANCELLED", UserInterface.RED);
                 break;
             case ONGOING:
-                statusString = UserInterface.colorize("ONGOING", UserInterface.BLUE);
+                if (!time.getDayOfWeek().equals(LocalDateTime.now().getDayOfWeek()) && LocalDateTime.now().isAfter(time)) {
+                    statusString = UserInterface.colorize("ONGOING", UserInterface.BLUE) + " - " + UserInterface.colorize("Not Processed Yet", UserInterface.ORANGE);
+                } else {
+                    statusString = UserInterface.colorize("ONGOING", UserInterface.BLUE);
+                }
                 break;
             case PROCESSED:
                 statusString = UserInterface.colorize("PROCESSED", UserInterface.GREEN);
                 break;
         }
 
-        return "Appointment " + "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + 
-        "\n > Patient: " + (patient == null ? "Unknown" : (patient.getName() + " (" + UserInterface.colorize("#" + patientId, UserInterface.YELLOW) + ")")) + 
-        "\n > Doctor: " + (doctor == null ? "Unknown" : ("Dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")")) + 
-        "\n > Time: " + time.format(formatter) +
-        "\n > Complaints: " + presentingComplaints + 
-        "\n > Status: " + statusString +
-        "\n-------------------------------------------------";
+        String patientInfo = "\n║ > Patient: " + (patient == null ? "Unknown" : (patient.getName() + " (" + UserInterface.colorize("#" + patientId, UserInterface.YELLOW) + ")"));
+
+        return "║ Appointment " + "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + 
+        (LoginState.getRole() == Role.PATIENT && LoginState.getLoginId() == patientId ? "" : patientInfo) + 
+        "\n║ > Doctor: " + (doctor == null ? "Unknown" : ("Dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")")) + 
+        "\n║ > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) + 
+        "\n║ > Time: " + time.format(formatter) +
+        "\n║ > Status: " + statusString +
+        "\n╠════════════════════════════════════════════════";
     }
 }

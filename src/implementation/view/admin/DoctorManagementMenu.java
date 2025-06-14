@@ -14,6 +14,7 @@ public class DoctorManagementMenu {
                 "Add a Doctor",
                 "Find a Doctor by ID",
                 "Find Doctor(s) by Name",
+                "Find Doctor(s) by Specialty",
                 "Remove a Doctor",
                 "View All Doctors\n",
                 "Return to Main Menu"
@@ -33,12 +34,15 @@ public class DoctorManagementMenu {
                     DoctorController.findDoctorsByName(scanner);
                     break;
                 case "4":
-                    DoctorController.removeDoctor(scanner);
+                    DoctorController.findDoctorsBySpecialty(scanner);
                     break;
                 case "5":
-                    DoctorController.viewDoctors(scanner);
+                    DoctorController.removeDoctor(scanner);
                     break;
                 case "6":
+                    DoctorController.viewDoctors(scanner);
+                    break;
+                case "7":
                     return;
                 case "0":
                     System.exit(0);

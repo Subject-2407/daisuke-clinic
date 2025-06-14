@@ -2,9 +2,11 @@ package shared.repository;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.Function;
 
 import adt.BST;
 import implementation.model.Appointment;
@@ -16,6 +18,7 @@ import implementation.model.enums.AppointmentStatus;
 public class AppointmentRepository {
     private static BST<Appointment> appointmentTree = new BST<>();
     private static final String filePath = "src/saves/appointments.txt";
+    private static final String tempFilePath = "src/saves/temp_appointments.txt"; // for modifying purposes
 
     public static int getAppointmentSize() { return appointmentTree.size(); }
 
@@ -47,6 +50,15 @@ public class AppointmentRepository {
 
     public static Appointment findById(int id) {
         return appointmentTree.search(id);
+    }
+
+    public static void updateStatusInFile(int id, AppointmentStatus status) {
+        try {
+            modifyLineInFile(id, a -> { a.setStatus(status); return a;} );
+        } catch (IOException e) {
+            System.err.println("Failed to update appointment data: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private static void saveToFile(Appointment appointment) throws IOException {
@@ -81,7 +93,7 @@ public class AppointmentRepository {
                 }
             } else {
                 if (patient != null) {
-                patient.addAppointmentHistory(appointment);
+                    patient.addAppointmentHistory(appointment);
                 }
                 if (doctor != null) {
                     doctor.addAppointmentHistory(appointment);
@@ -89,5 +101,32 @@ public class AppointmentRepository {
             }
         }
         reader.close();
+    }
+
+    private static void modifyLineInFile(int targetId, Function<Appointment, Appointment> modifier) throws IOException {
+        File inputFile = new File(filePath);
+        File tempFile = new File(tempFilePath);
+
+        try (
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))
+        ) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Appointment appointment = Appointment.fromFileString(line);
+                if (appointment.getId() == targetId) {
+                    appointment = modifier.apply(appointment); 
+                }
+                writer.write(appointment.toFileString());
+                writer.newLine();
+            }
+        }
+
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete original file");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temporary file");
+        }
     }
 }

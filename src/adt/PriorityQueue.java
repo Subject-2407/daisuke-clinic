@@ -1,6 +1,7 @@
 package adt;
 
 import java.time.LocalDateTime;
+import java.util.function.Predicate;
 
 // Priority Queue based on date time (earlier dates have higher priority)
 
@@ -58,6 +59,60 @@ public class PriorityQueue<T> {
 
     public int size() { return size; }
 
+    public T removeIf(Predicate<T> predicate) {
+        if (head == null) return null;
+
+        T value;
+
+        // check if node matches the predicate
+        if (predicate.test(head.value)) {
+            value = head.value;
+            head = head.next;
+            size--;
+            return value;
+        }
+
+        Node prev = head;
+        Node current = head.next;
+
+        while (current != null) {
+            if (predicate.test(current.value)) {
+                value = current.value;
+                prev.next = current.next;
+                size--;
+                return value;
+            }
+            prev = current;
+            current = current.next;
+        }
+
+        return null;
+    }
+
+    public T find(Predicate<T> predicate) {
+        Node current = head;
+        while (current != null) {
+            if (predicate.test(current.value)) {
+                return current.value;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T[] findAll(Predicate<T> predicate) {
+        LinkedList<T> matches = new LinkedList<>();
+        Node current = head;
+        while (current != null) {
+            if (predicate.test(current.value)) {
+                matches.insert(current.value);
+            }
+            current = current.next;
+        }
+        return (T[]) matches.toArray();
+    }
+
     public Object[] toArray() {
         Object[] array = new Object[size];
         Node temp = head;
@@ -67,4 +122,6 @@ public class PriorityQueue<T> {
         }
         return array;
     }
+
+    public boolean isEmpty() { return size == 0; }
 }

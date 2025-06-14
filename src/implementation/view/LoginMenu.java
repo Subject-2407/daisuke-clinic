@@ -14,7 +14,7 @@ public class LoginMenu {
         menuLoop: while (true) {
             UserInterface.update("Login");
             String[] options = {
-                "Log In as Patient (W.I.P.)",
+                "Log In as Patient",
                 "Log In as Doctor (W.I.P.)",
                 "Log In as Admin\n",
                 "Register as Patient\n"

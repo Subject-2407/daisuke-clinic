@@ -17,7 +17,7 @@ public class Patient implements Identifiable {
     private String phoneNumber;
     private PriorityQueue<Appointment> upcomingAppointments;
     private BST<Appointment> appointmentHistory;
-    private BST<MedicalRecord> medicalRecords;
+    private MedicalRecord medicalRecord;
 
     public Patient(int id, String password, String name, Gender gender, int age, String address, String phoneNumber) {
         this.id = id;
@@ -29,7 +29,7 @@ public class Patient implements Identifiable {
         this.phoneNumber = phoneNumber;
         this.upcomingAppointments = new PriorityQueue<>();
         this.appointmentHistory = new BST<>();
-        this.medicalRecords = new BST<>();
+        this.medicalRecord = new MedicalRecord(id);
     }
 
     public boolean validatePassword(String password) { return Hasher.hash(password).equals(this.password); }
@@ -40,7 +40,7 @@ public class Patient implements Identifiable {
     public String getPhoneNumber() { return phoneNumber; }
     public PriorityQueue<Appointment> getUpcomingAppointments() { return upcomingAppointments; }
     public BST<Appointment> getAppointmentHistory() { return appointmentHistory; }
-    public BST<MedicalRecord> getMedicalRecords() { return medicalRecords; }
+    public MedicalRecord getMedicalRecord() { return medicalRecord; }
 
     public void setName(String name) { this.name = name; }
     public void setGender(Gender gender) { this.gender = gender; }
@@ -50,7 +50,7 @@ public class Patient implements Identifiable {
     public void enqueueAppointment(Appointment appointment) { this.upcomingAppointments.enqueue(appointment, appointment.getTime()); }
     public void dequeueAppointment() { this.upcomingAppointments.dequeue(); }
     public void addAppointmentHistory(Appointment appointment) { this.appointmentHistory.insert(appointment); }
-    public void addMedicalRecord(MedicalRecord record) { this.medicalRecords.insert(record); }
+    public void setMedicalRecord(MedicalRecord record) { this.medicalRecord = record; }
     public void setPassword(String password) { this.password = Hasher.hash(password); }
 
     public String toFileString() {
@@ -79,11 +79,11 @@ public class Patient implements Identifiable {
     public String toString() {
         String genderString = gender.toString().substring(0, 1).toUpperCase() + gender.toString().substring(1).toLowerCase();
         return
-        "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "] " + name +
-        "\n > Gender: " + genderString + 
-        "\n > Age: " + age + 
-        "\n > Address: " + address + 
-        "\n > Phone Number: " + phoneNumber + 
-        "\n-------------------------------------------------";
+        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "] " + name +
+        "\n║ > Gender: " + genderString + 
+        "\n║ > Age: " + age + 
+        "\n║ > Address: " + address + 
+        "\n║ > Phone Number: " + phoneNumber + 
+        "\n╠════════════════════════════════════════════════";
     }
 }

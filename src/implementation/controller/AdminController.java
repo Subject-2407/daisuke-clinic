@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 import implementation.model.Admin;
 import shared.LoginState;
+import shared.enums.Role;
 import shared.repository.AdminRepository;
+import shared.repository.PatientRepository;
 import utility.Hasher;
 import utility.Input;
 import utility.UserInterface;
@@ -81,7 +83,7 @@ public class AdminController {
             }
 
             System.out.println();
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(foundAdmin);
 
             System.out.println();
@@ -123,7 +125,7 @@ public class AdminController {
             UserInterface.success("Successfully removed admin " + UserInterface.colorize("#" + adminId, UserInterface.YELLOW) + "!");
             UserInterface.info("Removed admin details: ");
 
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(admin);
 
             System.out.println();
@@ -132,12 +134,93 @@ public class AdminController {
     }
 
     public static void viewAdmins(Scanner scanner) {
-        UserInterface.update("View All Admins");
+        String header = "";
+        if (LoginState.getRole() == Role.ADMIN) {
+            header = "View All Admins";
+        } else if (LoginState.getRole() == Role.PATIENT) {
+            header = "Contact Admin";
+        }
 
-        System.out.println("-------------------------------------------------");
-        AdminRepository.getAll();
+        UserInterface.update(header);
+
+        if (PatientRepository.getRepositorySize() == 0) {
+            System.out.println("No admins available.");
+        } else {
+            if (LoginState.getRole() == Role.PATIENT) {
+                System.out.println("You can contact the admins below in case you have a problem with the system.\n");
+            }
+            System.out.println("╔════════════════════════════════════════════════");
+            AdminRepository.getAll();
+        }
 
         UserInterface.enter(scanner);
         return;
+    }
+
+    public static void editProfile(Scanner scanner, Admin profile) {
+        while (true) {
+            UserInterface.update("Edit Profile");
+            System.out.println("╔════════════════════════════════════════════════");
+            System.out.println(profile);
+            System.out.println();
+            String[] options = {
+                "Edit Name",
+                "Edit Phone Number",
+                "Change Password\n",
+            };
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            Input _editProfileChoice = new Input(scanner, "Enter choice: ")
+                                            .isNotEmpty().validate();
+            if (_editProfileChoice.isExit()) return;
+            String editProfileChoice = _editProfileChoice.get();
+
+            switchLoop: switch (editProfileChoice) {
+                case "1":
+                    Input _editName = new Input(scanner, "Enter new name: ")
+                                            .isNotEmpty().isAlphabetic().validate();
+                    if (_editName.isExit()) break;
+                    String newName = _editName.get();
+                    profile.setName(newName);
+                    AdminRepository.modifyFile(LoginState.getLoginId(), a -> { a.setName(newName); return a;});
+                    UserInterface.success("Name successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "2":
+                    Input _editPhoneNumber = new Input(scanner, "Enter new phone number: ")
+                                            .isNotEmpty().isValidPhoneNumber().validate();
+                    if (_editPhoneNumber.isExit()) break;
+                    String newPhoneNumber = _editPhoneNumber.get();
+                    profile.setPhoneNumber(newPhoneNumber);
+                    AdminRepository.modifyFile(LoginState.getLoginId(), a -> { a.setPhoneNumber(newPhoneNumber); return a;});
+                    UserInterface.success("Phone number successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "3":
+                    while (true) {
+                        Input _currentPassword = new Input(scanner, "Enter your current password: ")
+                                                .isNotEmpty().validate();
+                        if (_currentPassword.isExit()) break switchLoop;
+                        if (!profile.validatePassword(_currentPassword.get())) {
+                            UserInterface.warning("Invalid password!");
+                        } else break;
+                    }
+                    Input _changePassword = new Input(scanner, "Enter new password (must be alphanumeric): ")
+                                                .isNotEmpty().isAlphanumeric().validate();
+                    if (_changePassword.isExit()) break;
+                    String newPassword = _changePassword.get();
+                    profile.setPassword(newPassword);
+                    AdminRepository.modifyFile(LoginState.getLoginId(), a -> { a.setPassword(newPassword); return a;});
+                    UserInterface.success("Password successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "0":
+                    
+                default:
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+            }
+        }
     }
 }

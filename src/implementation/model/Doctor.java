@@ -116,7 +116,7 @@ public class Doctor implements Identifiable {
 
         for (DayOfWeek day : daysInOrder) {
             if (workSchedule.containsKey(day)) {
-                workScheduleString += String.format("\n   - %s: %s - %s", 
+                workScheduleString += String.format("\n║   - " + UserInterface.colorize("%s",UserInterface.GREEN) + ": %s - %s", 
                     day.toString().substring(0, 1).toUpperCase() + day.toString().substring(1).toLowerCase(), 
                     workSchedule.get(day).getStartTime(), 
                     workSchedule.get(day).getEndTime());
@@ -124,10 +124,10 @@ public class Doctor implements Identifiable {
         }
 
         return
-        "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " Dr. " + name +
-        "\n > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
-        "\n > Phone Number: " + phoneNumber + 
-        "\n > Work Schedule: " + workScheduleString + 
-        "\n-------------------------------------------------";
+        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " Dr. " + name +
+        "\n║ > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
+        "\n║ > Phone Number: " + phoneNumber + 
+        "\n║ > Work Schedule: " + workScheduleString + 
+        "\n╠════════════════════════════════════════════════";
     }
 }

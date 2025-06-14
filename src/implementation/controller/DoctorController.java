@@ -160,7 +160,8 @@ public class DoctorController {
             }
 
             System.out.println();
-            System.out.println("-------------------------------------------------");
+            UserInterface.info("Doctor details: ");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(foundDoctor);
 
             System.out.println();
@@ -179,7 +180,7 @@ public class DoctorController {
                                     .isNotEmpty().isAlphabetic().validate();
             if (_doctorName.isExit()) return;
 
-            Object[] doctors = DoctorRepository.findAll(d -> d.getName().toLowerCase().equals(_doctorName.get().toString().toLowerCase()));
+            Object[] doctors = DoctorRepository.findAll(d -> d.getName().toLowerCase().contains(_doctorName.get().toString().toLowerCase()));
 
             System.out.println();
             UserInterface.info("Result: ");
@@ -187,7 +188,7 @@ public class DoctorController {
             if (doctors.length == 0) {
                 System.out.println("No doctor found with that name.");
             } else {
-                System.out.println("-------------------------------------------------");
+                System.out.println("╔════════════════════════════════════════════════");
                 for (Object obj : doctors) {
                     Doctor doctor = (Doctor) obj;
                     System.out.println(doctor);
@@ -222,12 +223,12 @@ public class DoctorController {
             Object[] doctors = DoctorRepository.findAll(d -> d.getSpecialtyId() == getSpecialtyId);
 
             System.out.println();
-            UserInterface.info("Doctors in " + UserInterface.colorize(specialty.getName(),UserInterface.YELLOW) + ": ");
+            UserInterface.info("Doctor(s) in " + UserInterface.colorize(specialty.getName(),UserInterface.YELLOW) + ": ");
 
             if (doctors.length == 0) {
                 System.out.println("No doctor available.");
             } else {
-                System.out.println("-------------------------------------------------");
+                System.out.println("╔════════════════════════════════════════════════");
                 for (Object obj : doctors) {
                     Doctor doctor = (Doctor) obj;
                     System.out.println(doctor);
@@ -269,7 +270,7 @@ public class DoctorController {
             UserInterface.success("Successfully removed doctor " + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + "!");
             UserInterface.info("Removed doctor details: ");
 
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(doctor);
 
             System.out.println();
@@ -284,7 +285,7 @@ public class DoctorController {
         if (DoctorRepository.getRepositorySize() == 0) {
             System.out.println("No doctors available");
         } else {
-            System.out.println("-------------------------------------------------");
+            System.out.println("╔════════════════════════════════════════════════");
             DoctorRepository.getAll();
         }
 

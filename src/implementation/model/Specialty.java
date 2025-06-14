@@ -29,10 +29,7 @@ public class Specialty implements Identifiable {
 
     public Appointment peekAppointment() { return this.appointmentQueue.peek(); }
     public void enqueueAppointment(Appointment appointment) { this.appointmentQueue.enqueue(appointment, appointment.getTime()); }
-    public void dequeueAppointment(AppointmentStatus status) { 
-        this.appointmentQueue.dequeue().setStatus(status); // set previous appointment as PROCESSED
-        this.appointmentQueue.peek().setStatus(AppointmentStatus.ONGOING); // set current appointment as ONGOING
-    }
+    public void dequeueAppointment(AppointmentStatus status) { this.appointmentQueue.dequeue().setStatus(status); }
     public void setAvailableDoctors(int value) { this.availableDoctors = value; }
 
     public String toFileString() {

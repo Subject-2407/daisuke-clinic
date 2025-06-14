@@ -2,6 +2,8 @@ package implementation.view;
 
 import java.util.Scanner;
 
+import implementation.controller.AdminController;
+import implementation.controller.AppointmentController;
 import implementation.model.Admin;
 import implementation.view.admin.AdminManagementMenu;
 import implementation.view.admin.DoctorManagementMenu;
@@ -26,9 +28,9 @@ public class AdminMenu {
                 "Doctor Management",
                 "Patient Management",
                 "Admin Management",
-                "View Appointments (W.I.P.)",
-                "View Medical Records (W.I.P.)",
-                "Edit Profile (W.I.P.)\n",
+                "Find an Appointment by ID", // all clinic appointments
+                "View Appointment(s) by Specialty\n",
+                "Edit Profile\n",
                 "Log Out"
             };
             UserInterface.createOptions(options);
@@ -49,8 +51,13 @@ public class AdminMenu {
                     AdminManagementMenu.show(scanner);
                     break;
                 case "5":
+                    AppointmentController.findAppointmentById(scanner);
                     break;
                 case "6":
+                    AppointmentController.viewAppointmentsBySpecialty(scanner);
+                    break;
+                case "7":
+                    AdminController.editProfile(scanner, profile);
                     break;
                 case "8":
                     LoginState.logout();
