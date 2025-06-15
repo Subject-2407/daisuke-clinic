@@ -13,10 +13,10 @@ public class PatientAppointmentMenu {
             UserInterface.update("Appointments");
             String[] options = {
                 "Book an Appointment",
-                "View Next Appointment",
-                "View Upcoming Appointments (" + profile.getUpcomingAppointments().size() + ")",
-                "View Appointment History",
-                "Find an Appointment by ID",
+                "View My Next Appointment",
+                "View My Upcoming Appointments (" + profile.getUpcomingAppointments().size() + ")",
+                "View My Appointment History",
+                "Find My Appointment by ID",
                 "Cancel an Appointment\n",
                 "Return to Main Menu"
             };
@@ -38,7 +38,7 @@ public class PatientAppointmentMenu {
                     AppointmentController.getAppointmentHistory(scanner, profile.getAppointmentHistory());
                     break;
                 case "5":
-                    AppointmentController.getPatientAppointmentById(scanner, profile.getUpcomingAppointments(), profile.getAppointmentHistory());
+                    AppointmentController.getAppointmentById(scanner, profile.getUpcomingAppointments(), profile.getAppointmentHistory());
                     break;
                 case "6":
                     AppointmentController.cancelAppointment(scanner, profile.getUpcomingAppointments(), profile.getAppointmentHistory());

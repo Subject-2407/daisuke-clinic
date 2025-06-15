@@ -140,12 +140,12 @@ public class Appointment implements Identifiable {
         }
 
         String patientInfo = "\n║ > Patient: " + (patient == null ? "Unknown" : (patient.getName() + " (" + UserInterface.colorize("#" + patientId, UserInterface.YELLOW) + ")"));
-
-        return "║ Appointment " + "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + 
+ 
+        return "║ Appointment " + "[" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + (LoginState.getRole() == Role.DOCTOR && LoginState.getLoginId() == doctorId ? " - Your Appointment" : "") + 
         (LoginState.getRole() == Role.PATIENT && LoginState.getLoginId() == patientId ? "" : patientInfo) + 
-        "\n║ > Doctor: " + (doctor == null ? "Unknown" : ("Dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")")) + 
+        "\n║ > Doctor: " + (doctor == null ? "Unknown" : ("dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")")) + 
         "\n║ > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) + 
-        "\n║ > Time: " + time.format(formatter) +
+        "\n║ > Time: " + UserInterface.colorize(time.format(formatter), UserInterface.GREEN) +
         "\n║ > Status: " + statusString +
         "\n╠════════════════════════════════════════════════";
     }

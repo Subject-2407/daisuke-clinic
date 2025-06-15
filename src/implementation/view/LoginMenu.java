@@ -15,7 +15,7 @@ public class LoginMenu {
             UserInterface.update("Login");
             String[] options = {
                 "Log In as Patient",
-                "Log In as Doctor (W.I.P.)",
+                "Log In as Doctor",
                 "Log In as Admin\n",
                 "Register as Patient\n"
             };
@@ -31,6 +31,10 @@ public class LoginMenu {
                     }
                     break;
                 case "2":
+                    LoginController.doctorLogin(scanner);
+                    if (LoginState.isLoggedIn() && LoginState.getRole() == Role.DOCTOR) {
+                        DoctorMenu.show(scanner);
+                    }
                     break;
                 case "3":
                     LoginController.adminLogin(scanner);

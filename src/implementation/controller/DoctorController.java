@@ -1,6 +1,5 @@
 package implementation.controller;
 
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -139,7 +138,6 @@ public class DoctorController {
     }
 
     public static void findDoctor(Scanner scanner) {
-        reloadRepository();
         while (true) {
             UserInterface.update("Find a Doctor by ID");
             System.out.println("*) Enter 0 to exit\n");
@@ -170,7 +168,6 @@ public class DoctorController {
     }
 
     public static void findDoctorsByName(Scanner scanner) {
-        reloadRepository();
         while (true) {
             UserInterface.update("Find Doctor(s) by Name");
             System.out.println("*) Enter 0 to exit\n");
@@ -201,7 +198,6 @@ public class DoctorController {
     }
 
     public static void findDoctorsBySpecialty(Scanner scanner) {
-        reloadRepository();
         while (true) {
             UserInterface.update("Find Doctor(s) by Specialty");
             System.out.println("*) Enter 0 to exit\n");
@@ -241,7 +237,6 @@ public class DoctorController {
     }
 
     public static void removeDoctor(Scanner scanner) {
-        reloadRepository();
         while (true) {
             UserInterface.update("Remove a Doctor");
             System.out.println("*) Enter 0 to exit\n");
@@ -279,7 +274,6 @@ public class DoctorController {
     }
 
     public static void viewDoctors(Scanner scanner) {
-        reloadRepository();
         UserInterface.update("View All Doctors");
 
         if (DoctorRepository.getRepositorySize() == 0) {
@@ -291,14 +285,5 @@ public class DoctorController {
 
         UserInterface.enter(scanner);
         return;
-    }
-
-    private static void reloadRepository() {
-        try {
-            DoctorRepository.load(); // reload repository
-        } catch (IOException e) {
-            System.err.println("Failed to load doctor data: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

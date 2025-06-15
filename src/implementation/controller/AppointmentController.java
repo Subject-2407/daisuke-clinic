@@ -7,14 +7,18 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import adt.BST;
+import adt.LinkedList;
 import adt.PriorityQueue;
 import implementation.model.Appointment;
 import implementation.model.Doctor;
+import implementation.model.Patient;
 import implementation.model.Specialty;
 import implementation.model.enums.AppointmentStatus;
 import shared.LoginState;
 import shared.repository.AppointmentRepository;
 import shared.repository.DoctorRepository;
+import shared.repository.MedicalRecordRepository;
+import shared.repository.PatientRepository;
 import shared.repository.SpecialtyRepository;
 import utility.Input;
 import utility.UserInterface;
@@ -46,8 +50,8 @@ public class AppointmentController {
 
             // show doctor details and schedule
 
-            System.out.println("╔════════════════════════════════════════════════");
             UserInterface.info("Doctor details: ");
+            System.out.println("╔════════════════════════════════════════════════");
             System.out.println(doctor);
 
             // validate specialty
@@ -186,7 +190,7 @@ public class AppointmentController {
     }
 
     public static void getPatientNextAppointment(Scanner scanner, PriorityQueue<Appointment> profileUpcomingAppointments) {
-        UserInterface.update("View Next Appointment");
+        UserInterface.update("View My Next Appointment");
         if (profileUpcomingAppointments.isEmpty()) {
             System.out.println("You currently have no upcoming appointment.");
         } else {
@@ -200,9 +204,9 @@ public class AppointmentController {
         UserInterface.enter(scanner);
     }
 
-    public static void getPatientAppointmentById(Scanner scanner, PriorityQueue<Appointment> profileUpcomingAppointments, BST<Appointment> appointmentHistory) {
+    public static void getAppointmentById(Scanner scanner, PriorityQueue<Appointment> profileUpcomingAppointments, BST<Appointment> appointmentHistory) {
         while (true) {
-            UserInterface.update("Find an Appointment by ID");
+            UserInterface.update("Find My Appointment by ID");
             System.out.println("*) Enter 0 to exit\n");
 
             Appointment appointment = null;
@@ -236,14 +240,68 @@ public class AppointmentController {
         }
     }
 
+    public static void getAppointmentsByPatientName(Scanner scanner, PriorityQueue<Appointment> profileUpcomingAppointments, BST<Appointment> appointmentHistory) {
+        while (true) {
+            UserInterface.update("Find My Appointment(s) by Patient's Name");
+            System.out.println("*) Enter 0 to exit\n");
+
+            LinkedList<Appointment> appointments = new LinkedList<>();
+
+            Input _patientName = new Input(scanner, "Enter patient's name: ")
+                                        .isNotEmpty().isAlphabetic().validate();
+            if (_patientName.isExit()) return;
+            String patientName = _patientName.get();
+
+            // check the upcoming first
+            Object[] fromUpcomingAppointments = profileUpcomingAppointments.findAll(a -> {
+                Patient patient = PatientRepository.findById(a.getPatientId());
+                return patient.getName().toLowerCase().contains(patientName.toLowerCase());
+            });
+
+            // then check the history
+            Object[] fromAppointmentHistory = appointmentHistory.searchAll(a -> {
+                Patient patient = PatientRepository.findById(a.getPatientId());
+                return patient.getName().toLowerCase().contains(patientName.toLowerCase());
+            });
+         
+            // populate appointments linked list
+            for (Object obj : fromUpcomingAppointments) {
+                Appointment appointment = (Appointment) obj;
+                appointments.insert(appointment);
+            }
+            for (Object obj : fromAppointmentHistory) {
+                Appointment appointment = (Appointment) obj;
+                appointments.insert(appointment);
+            }
+
+            Object[] foundAppointments = appointments.toArray();
+
+            System.out.println();
+            UserInterface.info("Result: ");
+            if (foundAppointments.length == 0) {
+                System.out.println("No appointment found with the specified patient.");
+            } else {
+                System.out.println("╔════════════════════════════════════════════════");
+                for (Object obj : foundAppointments) {
+                    Appointment appointment = (Appointment) obj;
+                    System.out.println(appointment);
+                }
+            }
+
+            System.out.println();
+            UserInterface.enter(scanner);
+        }
+    }
+
     public static void getUpcomingAppointments(Scanner scanner, PriorityQueue<Appointment> profileUpcomingAppointments) {
-        UserInterface.update("Upcoming Appointments");
+        UserInterface.update("View My Upcoming Appointments");
         
         Object[] appointments = profileUpcomingAppointments.toArray();
 
         if (appointments.length == 0) {
-            System.out.println("No upcoming appointments.");
+            System.out.println("You currently have no upcoming appointments.");
         } else {
+            UserInterface.info("Your upcoming appointments: ");
             System.out.println("╔════════════════════════════════════════════════");
             for (Object obj : appointments) {
                 Appointment appointment = (Appointment) obj;
@@ -256,7 +314,7 @@ public class AppointmentController {
     }
 
     public static void getAppointmentHistory(Scanner scanner, BST<Appointment> appointmentHistory) {
-        UserInterface.update("Appointment History");
+        UserInterface.update("View My Appointment History");
 
         if (appointmentHistory.size() == 0) {
             System.out.println("No appointments have taken place.");
@@ -269,7 +327,7 @@ public class AppointmentController {
         UserInterface.enter(scanner);
     }
 
-    public static void findAppointmentById(Scanner scanner) {
+    public static void findClinicAppointmentById(Scanner scanner) {
         while (true) {
             UserInterface.update("Find an Appointment by ID");
             System.out.println("*) Enter 0 to exit\n");
@@ -336,5 +394,181 @@ public class AppointmentController {
             System.out.println();
             UserInterface.enter(scanner);
         }
+    }
+
+    public static void processDoctorNextAppointment(Scanner scanner, Doctor doctor, Specialty specialty) {
+        outerLoop: while (true) {
+            UserInterface.update("Check Next Appointment");
+            if (specialty.getAppointmentQueue().isEmpty()) {
+                System.out.println("No appointments are available in " + UserInterface.colorize(specialty.getName(),UserInterface.YELLOW) + " at the moment.");
+                System.out.println();
+                UserInterface.enter(scanner);
+                return;
+            }
+            System.out.println("*) You can only handle your own appointment\n");
+
+            Appointment nextAppointment = specialty.getAppointmentQueue().peek();
+
+            UserInterface.info("Next appointment in queue:");
+            System.out.println("╔════════════════════════════════════════════════");
+            System.out.println(nextAppointment);
+
+            if (doctor.getId() != nextAppointment.getDoctorId()) {
+                System.out.println();
+                UserInterface.enter(scanner);
+                return;
+            }
+
+            System.out.println();
+            String[] options = {
+                "Process Appointment"
+            };
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            while (true) {
+                Input _choice = new Input(scanner, "Enter choice: ").validate();
+                if (_choice.isExit()) return;
+                String choice = _choice.get();
+                if (choice.equals("1")) {
+                    Patient patient = PatientRepository.findById(nextAppointment.getPatientId());
+                    while (true) {
+                        Input _updateMedicalRecord = new Input(scanner, "Do you also wish to update the patient's medical record? (Y/N): ").isNotEmpty().validate();
+                        String updateMedicalRecord = _updateMedicalRecord.get();
+
+                        if (updateMedicalRecord.toUpperCase().equals("Y")) {
+                            System.out.println("\n*) Enter N to skip");
+                            String presentingComplaints = null, diagnosis = null, treatment = null, prescription = null, additionalNote = null;
+
+                            // PC input
+                            Input _presentingComplaints = new Input(scanner, "Enter presenting complaints: ")
+                                                            .isNotEmpty().validate();
+                            if (_presentingComplaints.isExit()) break outerLoop;
+                            if (!_presentingComplaints.get().toString().toUpperCase().equals("N")) {
+                                presentingComplaints = _presentingComplaints.get();
+                            }
+
+                            // diagnosis input
+                            Input _diagnosis = new Input(scanner, "Enter diagnosis: ")
+                                                            .isNotEmpty().validate();
+                            if (_diagnosis.isExit()) break outerLoop;
+                            if (!_diagnosis.get().toString().toUpperCase().equals("N")) {
+                                diagnosis = _diagnosis.get();
+                            }
+
+                            // diagnosis input
+                            Input _treatment = new Input(scanner, "Enter treatment: ")
+                                                            .isNotEmpty().validate();
+                            if (_treatment.isExit()) break outerLoop;
+                            if (!_treatment.get().toString().toUpperCase().equals("N")) {
+                                treatment = _treatment.get();
+                            }
+
+                            // prescription input
+                            Input _prescription = new Input(scanner, "Enter prescription: ")
+                                                            .isNotEmpty().validate();
+                            if (_prescription.isExit()) break outerLoop;
+                            if (!_prescription.get().toString().toUpperCase().equals("N")) {
+                                prescription = _prescription.get();
+                            }
+
+                            // additional note input
+                            Input _additionalNote = new Input(scanner, "Enter additional note: ")
+                                                            .isNotEmpty().validate();
+                            if (_additionalNote.isExit()) break outerLoop;
+                            if (!_additionalNote.get().toString().toUpperCase().equals("N")) {
+                                additionalNote = _additionalNote.get();
+                            }
+
+                            System.out.println();
+
+                            if (presentingComplaints != null) {
+                                final String patientComplaints = presentingComplaints;
+                                patient.getMedicalRecord().setPresentingComplaints(presentingComplaints);
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setPresentingComplaints(patientComplaints); return m;}); // med record's id shares the same id with patient's id
+
+                            }
+                            if (diagnosis != null) {
+                                final String patientDiagnosis = diagnosis;
+                                patient.getMedicalRecord().setDiagnosis(patientDiagnosis);
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setDiagnosis(patientDiagnosis); return m;});
+                            }
+                            if (treatment != null) {
+                                final String patientTreatment = treatment;
+                                patient.getMedicalRecord().setTreatment(patientTreatment);
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setTreatment(patientTreatment); return m;});
+                            }
+                            if (prescription != null) {
+                                final String doctorPrescription = prescription;
+                                patient.getMedicalRecord().setPrescription(doctorPrescription);
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setPrescription(doctorPrescription); return m;});
+                            }
+                            if (additionalNote != null) {
+                                final String doctorAdditionalNote = additionalNote;
+                                patient.getMedicalRecord().setAdditionalNote(doctorAdditionalNote);
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setAdditionalNote(doctorAdditionalNote); return m;});
+                            }
+                            if (presentingComplaints != null || diagnosis != null || treatment != null || prescription != null || additionalNote != null) {
+                                patient.getMedicalRecord().setRecordLastUpdated(LocalDateTime.now());
+                                UserInterface.success("Successfully updated patient's medical record!");
+                            }
+                            break;
+                        } else if (updateMedicalRecord.toUpperCase().equals("N")) {
+                            System.out.println();
+                            break;
+                        } else {
+                            UserInterface.warning("Invalid choice!");
+                            UserInterface.enter(scanner);
+                        }
+                    }
+                    
+                    patient.getMedicalRecord().setDoctorId(doctor.getId()); // also implicitly sets patient's their current doctor (the doctor will be allowed to update their medical record)
+                    patient.getMedicalRecord().setLastAppointmentId(nextAppointment.getId());
+                    MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setDoctorId(doctor.getId()); return m;});
+                    MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setLastAppointmentId(nextAppointment.getId()); return m;});
+
+                    // dequeue appointment from the objects referenced by it
+                    specialty.dequeueAppointment(AppointmentStatus.PROCESSED);
+                    AppointmentRepository.updateStatusInFile(nextAppointment.getId(), AppointmentStatus.PROCESSED);
+
+                    doctor.dequeueAppointment();
+                    doctor.addAppointmentHistory(nextAppointment);
+
+                    patient.dequeueAppointment();
+                    patient.addAppointmentHistory(nextAppointment);
+                    
+                    UserInterface.success("Successfully processed appointment " + UserInterface.colorize("#" + nextAppointment.getId() + "!", UserInterface.YELLOW));
+                    UserInterface.enter(scanner);
+                    break;
+                } else if (choice.equals("0")) {
+                    break outerLoop;
+                } else {
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+                    continue outerLoop;
+                }
+            }
+        }
+    }
+
+    public static void viewSpecialtyUpcomingAppointments(Scanner scanner, Specialty specialty) {
+        UserInterface.update("View Specialty Upcoming Appointments");
+
+        if (specialty.getAppointmentQueue().isEmpty()) {
+            System.out.println("No appointments are available in " + UserInterface.colorize(specialty.getName(),UserInterface.YELLOW) + " at the moment.");
+        } else {
+            UserInterface.info("Upcoming appointments in " + UserInterface.colorize(specialty.getName(),UserInterface.YELLOW) + ": ");
+
+            Object[] appointments = specialty.getAppointmentQueue().toArray();
+            System.out.println("╔════════════════════════════════════════════════");
+            for (Object obj : appointments) {
+                Appointment appointment = (Appointment) obj;
+                System.out.println(appointment);
+            }
+        }
+
+        System.out.println();
+        UserInterface.enter(scanner);
+        return;
     }
 }

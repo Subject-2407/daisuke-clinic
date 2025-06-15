@@ -20,7 +20,7 @@ public class Main {
         AdminRepository.load();
         AppointmentRepository.load();
         MedicalRecordRepository.load();
-        
+
         // initialize scanner for inputs
         Scanner scanner = new Scanner(System.in);
         

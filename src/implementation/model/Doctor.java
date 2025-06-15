@@ -124,8 +124,8 @@ public class Doctor implements Identifiable {
         }
 
         return
-        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " Dr. " + name +
-        "\n║ > Specialty: " + (specialty == null ? "Unknown" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
+        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " dr. " + name +
+        "\n║ > Specialty: " + (specialty == null ? "N/A" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
         "\n║ > Phone Number: " + phoneNumber + 
         "\n║ > Work Schedule: " + workScheduleString + 
         "\n╠════════════════════════════════════════════════";

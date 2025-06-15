@@ -21,13 +21,14 @@ public class PatientMenu {
         profile = PatientRepository.findById(LoginState.getLoginId());
         menuLoop: while (true) {
             UserInterface.update();
-            System.out.println("Welcome, " + profile.getName() + " (" + UserInterface.colorize("#" + profile.getId(), UserInterface.YELLOW) + ")\n");
+            System.out.println("Welcome, " + profile.getName() + " (" + UserInterface.colorize("#" + profile.getId(), UserInterface.YELLOW) + ")");
+            System.out.println("You currently have " + UserInterface.colorize("" + profile.getUpcomingAppointments().size(), UserInterface.YELLOW) + " upcoming appointment(s).\n");
 
             String[] options = {
                 "Appointments",
                 "My Medical Record\n",
                 "View Available Specialties",
-                "View Doctor(s) by Specialty",
+                "View Doctors by Specialty",
                 "Find Doctor(s) by Name\n",
                 "Edit Profile",
                 "Contact Admin\n",

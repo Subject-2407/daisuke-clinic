@@ -2,8 +2,67 @@ package implementation.view;
 
 import java.util.Scanner;
 
-public class DoctorMenu {
-    public static void show(Scanner scanner) {
+import implementation.controller.AdminController;
+import implementation.model.Doctor;
+import implementation.model.Specialty;
+import implementation.view.doctor.DoctorAppointmentMenu;
+import implementation.view.doctor.DoctorDoctorsMenu;
+import implementation.view.doctor.DoctorPatientsMenu;
+import shared.LoginState;
+import shared.repository.DoctorRepository;
+import shared.repository.SpecialtyRepository;
+import utility.Input;
+import utility.UserInterface;
 
+public class DoctorMenu {
+    private static Doctor profile;
+    private static Specialty specialty;
+
+    public static void show(Scanner scanner) {
+        profile = DoctorRepository.findById(LoginState.getLoginId());
+        specialty = SpecialtyRepository.findById(profile.getSpecialtyId());
+        menuLoop: while (true) {
+            UserInterface.update("Doctor Menu");
+            System.out.println("Welcome, dr. " + profile.getName() + " (" + UserInterface.colorize("#" + profile.getId(), UserInterface.YELLOW) + ")");
+            System.out.println("You currently have " + UserInterface.colorize("" + profile.getUpcomingAppointments().size(), UserInterface.YELLOW) + " upcoming appointment(s).\n");
+
+            String[] options = {
+                "Appointments",
+                "My Patients (W.I.P.)",
+                "View Doctors (W.I.P.)\n",
+                "Edit Profile (W.I.P.)",
+                "Contact Admin\n",
+                "Log Out"
+            };
+
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            String input = new Input(scanner, "Enter choice: ").validate().get();
+            switch (input == null ? "0" : input) {
+                case "1":
+                    DoctorAppointmentMenu.show(scanner, profile, specialty);
+                    break;
+                // case "2":
+                //     DoctorPatientsMenu.show(scanner);
+                //     break;
+                // case "3":
+                //     DoctorDoctorsMenu.show(scanner);
+                //     break;
+                case "4":
+                    break;
+                case "5":
+                    AdminController.viewAdmins(scanner);
+                    break;
+                case "6":
+                    LoginState.logout();
+                    break menuLoop;
+                case "0":
+                    System.exit(0);
+                default:
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+            }
+        }
     }
 }

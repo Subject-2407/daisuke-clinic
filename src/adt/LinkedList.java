@@ -28,6 +28,8 @@ public class LinkedList<T> {
     // Returns Linked List size
     public int size() { return size; }
 
+    public boolean isEmpty() { return size == 0; }
+
     // Returns a Node by index
     public T get(int index) {
         if (index < 0 || index >= size) {

@@ -51,7 +51,7 @@ public class AdminMenu {
                     AdminManagementMenu.show(scanner);
                     break;
                 case "5":
-                    AppointmentController.findAppointmentById(scanner);
+                    AppointmentController.findClinicAppointmentById(scanner);
                     break;
                 case "6":
                     AppointmentController.viewAppointmentsBySpecialty(scanner);

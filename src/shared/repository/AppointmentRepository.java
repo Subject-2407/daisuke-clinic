@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import adt.BST;
 import implementation.model.Appointment;
@@ -50,6 +51,10 @@ public class AppointmentRepository {
 
     public static Appointment findById(int id) {
         return appointmentTree.search(id);
+    }
+
+    public static Object[] findAll(Predicate<Appointment> predicate) {
+        return appointmentTree.searchAll(predicate);
     }
 
     public static void updateStatusInFile(int id, AppointmentStatus status) {

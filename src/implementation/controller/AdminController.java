@@ -137,7 +137,7 @@ public class AdminController {
         String header = "";
         if (LoginState.getRole() == Role.ADMIN) {
             header = "View All Admins";
-        } else if (LoginState.getRole() == Role.PATIENT) {
+        } else if (LoginState.getRole() == Role.PATIENT || LoginState.getRole() == Role.DOCTOR) {
             header = "Contact Admin";
         }
 
@@ -146,7 +146,7 @@ public class AdminController {
         if (PatientRepository.getRepositorySize() == 0) {
             System.out.println("No admins available.");
         } else {
-            if (LoginState.getRole() == Role.PATIENT) {
+            if (LoginState.getRole() == Role.PATIENT || LoginState.getRole() == Role.DOCTOR) {
                 System.out.println("You can contact the admins below in case you have a problem with the system.\n");
             }
             System.out.println("╔════════════════════════════════════════════════");

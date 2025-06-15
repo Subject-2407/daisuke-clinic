@@ -1,4 +1,5 @@
-1|Neurology|15
-2|Pediatrics|0
-3|Surgery|7
-4|Cardiology|15
+1|Umum|20
+2|Gigi|10
+3|Anak|15
+4|Penyakit Dalam|12
+5|Saraf|8

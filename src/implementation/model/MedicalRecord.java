@@ -64,6 +64,7 @@ public class MedicalRecord implements Identifiable {
     public String getAdditionalNote() { return additionalNote; }
     public LocalDateTime getRecordLastUpdated() { return recordLastUpdated; }
 
+    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
     public void setLastAppointmentId(int appointmentId) { this.lastAppointmentId = appointmentId; }
     public void setPresentingComplaints(String complaints) { this.presentingComplaints = complaints; }
     public void setDiagnosis(String diagnosis) { this.diagnosis = diagnosis; }
@@ -125,7 +126,7 @@ public class MedicalRecord implements Identifiable {
 
         String genderString = patient != null ? (patient.getGender() == Gender.MALE ? "M" : "F") : "";
         String patientString = patient != null ? (patient.getName() + " - " + patient.getAge() + "/" + genderString + " (" + UserInterface.colorize("#" + patientId, UserInterface.YELLOW) + ")") : UserInterface.colorize("N/A",UserInterface.YELLOW);
-        String doctorString = doctor != null ? ("Dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")") : UserInterface.colorize("N/A                                ",UserInterface.YELLOW);
+        String doctorString = doctor != null ? ("dr. " + doctor.getName() + " (" + UserInterface.colorize("#" + doctorId, UserInterface.YELLOW) + ")") : UserInterface.colorize("N/A                                ",UserInterface.YELLOW);
         String appointmentSring = lastAppointmentTime != null ? UserInterface.colorize(lastAppointmentTime.format(formatter), UserInterface.BLUE) : UserInterface.colorize("N/A",UserInterface.BLUE);
     
         return String.format(
