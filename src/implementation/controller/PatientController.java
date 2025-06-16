@@ -2,6 +2,8 @@ package implementation.controller;
 
 import java.util.Scanner;
 
+import adt.LinkedList;
+import implementation.model.MedicalRecord;
 import implementation.model.Patient;
 import implementation.model.enums.Gender;
 import shared.LoginState;
@@ -248,7 +250,7 @@ public class PatientController {
                     if (_editName.isExit()) break;
                     String newName = _editName.get();
                     profile.setName(newName);
-                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setName(newName); return p;});
+                    PatientRepository.modifyFile(profile.getId(), p -> { p.setName(newName); return p;});
                     UserInterface.success("Name successfully updated!");
                     UserInterface.enter(scanner);
                     break;
@@ -258,7 +260,7 @@ public class PatientController {
                     if (_editAge.isExit()) break;
                     int newAge = _editAge.getInteger();
                     profile.setAge(newAge);
-                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setAge(newAge); return p;});
+                    PatientRepository.modifyFile(profile.getId(), p -> { p.setAge(newAge); return p;});
                     UserInterface.success("Age successfully updated!");
                     UserInterface.enter(scanner);
                     break;
@@ -268,7 +270,7 @@ public class PatientController {
                     if (_editAddress.isExit()) break;
                     String newAddress = _editAddress.get();
                     profile.setAddress(newAddress);
-                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setAddress(newAddress); return p;});
+                    PatientRepository.modifyFile(profile.getId(), p -> { p.setAddress(newAddress); return p;});
                     UserInterface.success("Address successfully updated!");
                     UserInterface.enter(scanner);
                     break;
@@ -278,7 +280,7 @@ public class PatientController {
                     if (_editPhoneNumber.isExit()) break;
                     String newPhoneNumber = _editPhoneNumber.get();
                     profile.setPhoneNumber(newPhoneNumber);
-                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setPhoneNumber(newPhoneNumber); return p;});
+                    PatientRepository.modifyFile(profile.getId(), p -> { p.setPhoneNumber(newPhoneNumber); return p;});
                     UserInterface.success("Phone number successfully updated!");
                     UserInterface.enter(scanner);
                     break;
@@ -296,13 +298,150 @@ public class PatientController {
                     if (_changePassword.isExit()) break;
                     String newPassword = _changePassword.get();
                     profile.setPassword(newPassword);
-                    PatientRepository.modifyFile(LoginState.getLoginId(), p -> { p.setPassword(newPassword); return p;});
+                    PatientRepository.modifyFile(profile.getId(), p -> { p.setPassword(newPassword); return p;});
                     UserInterface.success("Password successfully updated!");
                     UserInterface.enter(scanner);
                     break;
                 default:
                     UserInterface.warning("Invalid choice!");
                     UserInterface.enter(scanner);
+            }
+        }
+    }
+
+    public static void getDoctorCurrentPatients(Scanner scanner, int doctorId) {
+        UserInterface.update("View My Current Patients");
+
+        LinkedList<Patient> patients = new LinkedList<>();
+
+        Object[] associatedMedicalRecords = MedicalRecordRepository.findAll(m -> m.getDoctorId() == doctorId);
+
+        for (Object obj : associatedMedicalRecords) {
+            MedicalRecord record = (MedicalRecord) obj;
+            Patient patient = PatientRepository.findById(record.getPatientId());
+
+            if (patient != null) {
+                patients.insert(patient);
+            }
+        }
+
+        if (patients.isEmpty()) {
+            System.out.println("You are currently not in charge of handling any patients.");
+        } else {
+            Object[] patientList = patients.toArray();
+
+            System.out.println("╔════════════════════════════════════════════════");
+            for (Object obj : patientList) {
+                Patient patient = (Patient) obj;
+                System.out.println(patient);
+            }
+        }
+
+        System.out.println();
+        UserInterface.enter(scanner);
+    }
+
+    public static void getDoctorCurrentPatientById(Scanner scanner, int doctorId) {
+        outerLoop: while (true) {
+            UserInterface.update("Find My Patient by ID");
+            LinkedList<Patient> patients = new LinkedList<>();
+
+            Object[] associatedMedicalRecords = MedicalRecordRepository.findAll(m -> m.getDoctorId() == doctorId);
+
+            for (Object obj : associatedMedicalRecords) {
+                MedicalRecord record = (MedicalRecord) obj;
+                Patient patient = PatientRepository.findById(record.getPatientId());
+
+                if (patient != null) {
+                    patients.insert(patient);
+                }
+            }
+            
+            if (patients.isEmpty()) {
+                System.out.println("You are currently not in charge of handling any patients.");
+                System.out.println();
+                UserInterface.enter(scanner);
+                return;
+            } else {
+                while (true) {
+                    System.out.println("*) Enter 0 to exit\n");
+
+                    Patient patient = null;
+
+                    while (patient == null) {
+                        Input _patientId = new Input(scanner, "Enter patient's ID (in number): ")
+                                                .isNotEmpty().isNumeric().validate();
+                        if (_patientId.isExit()) return;
+                        int patientId = _patientId.getInteger();
+
+                        patient = patients.find(p -> p.getId() == patientId);
+
+                        if (patient == null) {
+                            UserInterface.warning("Can't find your current patient with this ID!");
+                        }
+                    }
+
+                    System.out.println();
+                    UserInterface.info("Patient details: ");
+                    System.out.println("╔════════════════════════════════════════════════");
+                    System.out.println(patient);
+                    
+                    System.out.println();
+                    UserInterface.enter(scanner);
+                    continue outerLoop;
+                }
+            }
+        }
+    }
+
+    public static void getDoctorCurrentPatientsByName(Scanner scanner, int doctorId) {
+        outerLoop: while (true) {
+            UserInterface.update("Find My Patient by ID");
+            LinkedList<Patient> patients = new LinkedList<>();
+
+            Object[] associatedMedicalRecords = MedicalRecordRepository.findAll(m -> m.getDoctorId() == doctorId);
+
+            for (Object obj : associatedMedicalRecords) {
+                MedicalRecord record = (MedicalRecord) obj;
+                Patient patient = PatientRepository.findById(record.getPatientId());
+
+                if (patient != null) {
+                    patients.insert(patient);
+                }
+            }
+            
+            if (patients.isEmpty()) {
+                System.out.println("You are currently not in charge of handling any patients.");
+                System.out.println();
+                UserInterface.enter(scanner);
+                return;
+            } else {
+                while (true) {
+                    System.out.println("*) Enter 0 to exit\n");
+
+                    Input _patientName = new Input(scanner, "Enter patient's name: ")
+                                            .isNotEmpty().isAlphabetic().validate();
+                    if (_patientName.isExit()) return;
+                    String patientName = _patientName.get();
+
+                    Object[] patientList = patients.findAll(p -> p.getName().toLowerCase().contains(patientName.toLowerCase()));
+
+                    System.out.println();
+                    UserInterface.info("Result: ");
+                    if (patientList.length == 0) {
+                        System.out.println("No patient found with that name.");
+                    } else {
+                        System.out.println("╔════════════════════════════════════════════════");
+                        for (Object obj : patientList) {
+                            Patient patient = (Patient) obj;
+                            System.out.println(patient);
+                        }
+                    }
+                    
+                    System.out.println();
+                    UserInterface.enter(scanner);
+                    continue outerLoop;
+                }
             }
         }
     }

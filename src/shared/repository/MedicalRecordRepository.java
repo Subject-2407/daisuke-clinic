@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import adt.BST;
 import implementation.model.MedicalRecord;
@@ -26,6 +27,11 @@ public class MedicalRecordRepository {
             e.printStackTrace();
         }
     }
+
+    public static Object[] findAll(Predicate<MedicalRecord> predicate) {
+        return medicalRecordTree.searchAll(predicate);
+    }
+
 
     public static MedicalRecord findById(int id) {
         return medicalRecordTree.search(id);

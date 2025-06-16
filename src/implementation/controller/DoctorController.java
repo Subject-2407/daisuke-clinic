@@ -197,6 +197,25 @@ public class DoctorController {
         }
     }
 
+    public static void findDoctorsInCurrentSpecialty(Scanner scanner, int specialtyId) {
+        UserInterface.update("View Doctors in My Specialty");
+
+        Object[] doctors = DoctorRepository.findAll(d -> d.getSpecialtyId() == specialtyId);
+
+        if (doctors.length == 0) {
+            System.out.println("No doctor available.");
+        } else {
+            System.out.println("╔════════════════════════════════════════════════");
+            for (Object obj : doctors) {
+                Doctor doctor = (Doctor) obj;
+                System.out.println(doctor);
+            }
+        }
+
+        System.out.println();
+        UserInterface.enter(scanner);
+    }
+
     public static void findDoctorsBySpecialty(Scanner scanner) {
         while (true) {
             UserInterface.update("Find Doctor(s) by Specialty");
@@ -285,5 +304,70 @@ public class DoctorController {
 
         UserInterface.enter(scanner);
         return;
+    }
+
+    public static void editProfile(Scanner scanner, Doctor doctorProfile) {
+        while (true) {
+            UserInterface.update("Edit Profile");
+            System.out.println("╔════════════════════════════════════════════════");
+            System.out.println(doctorProfile);
+            System.out.println();
+            String[] options = {
+                "Edit Name",
+                "Edit Phone Number",
+                "Change Password\n",
+            };
+            UserInterface.createOptions(options);
+
+            System.out.println();
+            Input _editProfileChoice = new Input(scanner, "Enter choice: ")
+                                            .isNotEmpty().validate();
+            if (_editProfileChoice.isExit()) return;
+            String editProfileChoice = _editProfileChoice.get();
+
+            switchLoop: switch (editProfileChoice) {
+                case "1":
+                    Input _editName = new Input(scanner, "Enter new name: ")
+                                            .isNotEmpty().isAlphabetic().validate();
+                    if (_editName.isExit()) break;
+                    String newName = _editName.get();
+                    doctorProfile.setName(newName);
+                    DoctorRepository.modifyFile(doctorProfile.getId(), d -> { d.setName(newName); return d;});
+                    UserInterface.success("Name successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "2":
+                    Input _editPhoneNumber = new Input(scanner, "Enter new phone number: ")
+                                            .isNotEmpty().isValidPhoneNumber().validate();
+                    if (_editPhoneNumber.isExit()) break;
+                    String newPhoneNumber = _editPhoneNumber.get();
+                    doctorProfile.setPhoneNumber(newPhoneNumber);
+                    DoctorRepository.modifyFile(doctorProfile.getId(), d -> { d.setPhoneNumber(newPhoneNumber); return d;});
+                    UserInterface.success("Phone number successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                case "3":
+                    while (true) {
+                        Input _currentPassword = new Input(scanner, "Enter your current password: ")
+                                                .isNotEmpty().validate();
+                        if (_currentPassword.isExit()) break switchLoop;
+                        if (!doctorProfile.validatePassword(_currentPassword.get())) {
+                            UserInterface.warning("Invalid password!");
+                        } else break;
+                    }
+                    Input _changePassword = new Input(scanner, "Enter new password (must be alphanumeric): ")
+                                                .isNotEmpty().isAlphanumeric().validate();
+                    if (_changePassword.isExit()) break;
+                    String newPassword = _changePassword.get();
+                    doctorProfile.setPassword(newPassword);
+                    DoctorRepository.modifyFile(doctorProfile.getId(), d -> { d.setPassword(newPassword); return d;});
+                    UserInterface.success("Password successfully updated!");
+                    UserInterface.enter(scanner);
+                    break;
+                default:
+                    UserInterface.warning("Invalid choice!");
+                    UserInterface.enter(scanner);
+            }
+        }
     }
 }

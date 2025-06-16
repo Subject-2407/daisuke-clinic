@@ -8,6 +8,8 @@ import adt.BST;
 import adt.Map;
 import adt.PriorityQueue;
 import implementation.model.interfaces.Identifiable;
+import shared.LoginState;
+import shared.enums.Role;
 import shared.repository.SpecialtyRepository;
 import utility.Hasher;
 import utility.UserInterface;
@@ -41,6 +43,7 @@ public class Doctor implements Identifiable {
     public PriorityQueue<Appointment> getUpcomingAppointments() { return upcomingAppointments; }
     public BST<Appointment> getAppointmentHistory() { return appointmentHistory; }
 
+    public void setName(String name) { this.name = name; }
     public void setWorkSchedule(Map<DayOfWeek, WorkingHours> schedule) { this.workSchedule = schedule; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setPassword(String password) { this.password = Hasher.hash(password); }
@@ -124,7 +127,7 @@ public class Doctor implements Identifiable {
         }
 
         return
-        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " dr. " + name +
+        "║ [" + UserInterface.colorize("#" + id, UserInterface.YELLOW) + "]" + " dr. " + name + (LoginState.getRole() == Role.DOCTOR && LoginState.getLoginId() == id ? " (You)" : "") + 
         "\n║ > Specialty: " + (specialty == null ? "N/A" : (specialty.getName() + " (" + UserInterface.colorize("#" + specialtyId, UserInterface.YELLOW) + ")")) +
         "\n║ > Phone Number: " + phoneNumber + 
         "\n║ > Work Schedule: " + workScheduleString + 

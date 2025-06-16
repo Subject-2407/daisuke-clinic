@@ -3,6 +3,7 @@ package implementation.view;
 import java.util.Scanner;
 
 import implementation.controller.AdminController;
+import implementation.controller.DoctorController;
 import implementation.model.Doctor;
 import implementation.model.Specialty;
 import implementation.view.doctor.DoctorAppointmentMenu;
@@ -28,9 +29,9 @@ public class DoctorMenu {
 
             String[] options = {
                 "Appointments",
-                "My Patients (W.I.P.)",
-                "View Doctors (W.I.P.)\n",
-                "Edit Profile (W.I.P.)",
+                "My Patients",
+                "View Doctors\n",
+                "Edit Profile",
                 "Contact Admin\n",
                 "Log Out"
             };
@@ -43,13 +44,14 @@ public class DoctorMenu {
                 case "1":
                     DoctorAppointmentMenu.show(scanner, profile, specialty);
                     break;
-                // case "2":
-                //     DoctorPatientsMenu.show(scanner);
-                //     break;
-                // case "3":
-                //     DoctorDoctorsMenu.show(scanner);
-                //     break;
+                case "2":
+                    DoctorPatientsMenu.show(scanner, profile);
+                    break;
+                case "3":
+                    DoctorDoctorsMenu.show(scanner, specialty);
+                    break;
                 case "4":
+                    DoctorController.editProfile(scanner, profile);
                     break;
                 case "5":
                     AdminController.viewAdmins(scanner);

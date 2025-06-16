@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import adt.BST;
@@ -41,6 +42,15 @@ public class DoctorRepository {
         return doctorTree.search(id);
     }
 
+    public static void modifyFile(int id, Function<Doctor, Doctor> modifier) {
+        try {
+            modifyLineInFile(id, modifier);
+        } catch (IOException e) {
+            System.err.println("Failed to update doctor data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void remove(int id) {
         doctorTree.remove(id);
         try {
@@ -68,6 +78,33 @@ public class DoctorRepository {
             doctorTree.insert(doctor);
         }
         reader.close();
+    }
+
+    private static void modifyLineInFile(int targetId, Function<Doctor, Doctor> modifier) throws IOException {
+        File inputFile = new File(filePath);
+        File tempFile = new File(tempFilePath);
+
+        try (
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))
+        ) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Doctor doctor = Doctor.fromFileString(line);
+                if (doctor.getId() == targetId) {
+                    doctor = modifier.apply(doctor); 
+                }
+                writer.write(doctor.toFileString());
+                writer.newLine();
+            }
+        }
+
+        if (!inputFile.delete()) {
+            throw new IOException("Could not delete original file");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            throw new IOException("Could not rename temporary file");
+        }
     }
 
     private static void removeFromFile(int targetId) throws IOException {

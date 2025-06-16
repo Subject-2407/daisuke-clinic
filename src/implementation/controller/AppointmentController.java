@@ -437,7 +437,7 @@ public class AppointmentController {
                         String updateMedicalRecord = _updateMedicalRecord.get();
 
                         if (updateMedicalRecord.toUpperCase().equals("Y")) {
-                            System.out.println("\n*) Enter N to skip");
+                            System.out.println("\n*) Enter N in each field to skip");
                             String presentingComplaints = null, diagnosis = null, treatment = null, prescription = null, additionalNote = null;
 
                             // PC input
@@ -510,6 +510,7 @@ public class AppointmentController {
                             }
                             if (presentingComplaints != null || diagnosis != null || treatment != null || prescription != null || additionalNote != null) {
                                 patient.getMedicalRecord().setRecordLastUpdated(LocalDateTime.now());
+                                MedicalRecordRepository.modifyFile(patient.getId(), m -> { m.setRecordLastUpdated(LocalDateTime.now()); return m;});
                                 UserInterface.success("Successfully updated patient's medical record!");
                             }
                             break;
