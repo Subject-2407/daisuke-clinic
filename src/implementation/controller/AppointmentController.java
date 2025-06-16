@@ -1,5 +1,6 @@
 package implementation.controller;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -50,6 +51,7 @@ public class AppointmentController {
 
             // show doctor details and schedule
 
+            System.out.println();
             UserInterface.info("Doctor details: ");
             System.out.println("╔════════════════════════════════════════════════");
             System.out.println(doctor);
@@ -58,6 +60,7 @@ public class AppointmentController {
             Specialty specialty = SpecialtyRepository.findById(doctor.getSpecialtyId());
 
             if (specialty == null) {
+                System.out.println();
                 UserInterface.warning("Could not proceed with appointment booking because doctor's specialty is unknown. Please contact the admin for support.");
                 UserInterface.enter(scanner);
                 continue;
@@ -65,6 +68,7 @@ public class AppointmentController {
                 // check if patient already have one appointment in the specialty
                 Object patientAppointments = specialty.getAppointmentQueue().find(a -> a.getPatientId() == patientId);
                 if (patientAppointments != null) {
+                    System.out.println();
                     UserInterface.warning("You already have a scheduled appointment in the " + UserInterface.colorize(specialty.getName() + "!", UserInterface.YELLOW));
                     UserInterface.enter(scanner);
                     continue;
@@ -72,21 +76,46 @@ public class AppointmentController {
 
                 // check if specialty appointment queue is full
                 if (specialty.getAppointmentQueue().size() == specialty.getMaxSlots()) {
+                    System.out.println();
                     UserInterface.warning("The appointment queue in this specialty is currently full!");
                     UserInterface.enter(scanner);
                     continue;
                 }
             }
 
+            // get doctor's taken slots
+            LinkedList<LocalDateTime> doctorTakenSlots = new LinkedList<>();
+            for (Object obj : doctor.getUpcomingAppointments().toArray()) {
+                Appointment appointment = (Appointment) obj;
+                doctorTakenSlots.insert(appointment.getTime());
+            }
+
+            if (!doctorTakenSlots.isEmpty()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
+                System.out.println("║ > Doctor's booked slot(s): ");
+                int i = 0;
+                for (Object obj : doctorTakenSlots.toArray()) {
+                    i += 1;
+                    LocalDateTime takenSlot = (LocalDateTime) obj;
+                    System.out.println("║   " + i + ". " + UserInterface.colorize(takenSlot.format(formatter), UserInterface.ORANGE));
+                }
+                System.out.println("╚════════════════════════════════════════════════");
+            }
+            
+
+            System.out.println();
+            if (!doctorTakenSlots.isEmpty()) {
+                System.out.println("*) The chosen time must be within at least 15 minutes before or after a taken slot.\n");
+            }
             // appointment time input
             while (true) {
                 Input _appointmentTime = new Input(scanner, "Schedule your appointment (must be within the doctor's schedule; format: DD-MM-YYYY HH:MM): ")
                                             .isNotEmpty().validate();
                 if (_appointmentTime.isExit()) return;
                 String appointmentTime = _appointmentTime.getString();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
                 try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
                     LocalDateTime parsedTime = LocalDateTime.parse(appointmentTime, formatter);
                     if (parsedTime.isBefore(LocalDateTime.now())) {
                         UserInterface.warning("What are you, a time traveller?");
@@ -96,8 +125,26 @@ public class AppointmentController {
                         LocalTime targetTime = parsedTime.toLocalTime();
 
                         if (!targetTime.isBefore(startTime) && !targetTime.isAfter(endTime)) {
-                            time = parsedTime;
-                            break;
+                            if (!doctorTakenSlots.isEmpty()) {
+                                boolean isProperSlot = false;
+                                for (Object obj : doctorTakenSlots.toArray()) {
+                                    LocalDateTime takenSlot = (LocalDateTime) obj;
+
+                                    long minutesDiff = Math.abs(Duration.between(takenSlot, parsedTime).toMinutes());
+                                    if (!(minutesDiff <= 15)) {
+                                        isProperSlot = true;
+                                    }
+                                }
+                                if (!isProperSlot) {
+                                    UserInterface.warning("You must choose a time within at least 15 minutes before or after an already booked slot!");
+                                } else {
+                                    time = parsedTime;
+                                    break;
+                                }
+                            } else {
+                                time = parsedTime;
+                                break;
+                            }
                         } else {
                             UserInterface.warning("Selected time must be within the doctor's working hours!");
                         }
