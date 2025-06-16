@@ -121,7 +121,7 @@ public class Appointment implements Identifiable {
         switch (status) {
             case SCHEDULED:
                 String today = "";
-                if (time.getDayOfWeek().equals(LocalDateTime.now().getDayOfWeek())) today = " (Today)";
+                if (time.toLocalDate().equals(LocalDateTime.now().toLocalDate())) today = " (Today)";
                 statusString = UserInterface.colorize("SCHEDULED", UserInterface.YELLOW) + today;
                 break;
             case CANCELLED:
