@@ -126,13 +126,14 @@ public class AppointmentController {
 
                         if (!targetTime.isBefore(startTime) && !targetTime.isAfter(endTime)) {
                             if (!doctorTakenSlots.isEmpty()) {
-                                boolean isProperSlot = false;
+                                boolean isProperSlot = true;
                                 for (Object obj : doctorTakenSlots.toArray()) {
                                     LocalDateTime takenSlot = (LocalDateTime) obj;
 
                                     long minutesDiff = Math.abs(Duration.between(takenSlot, parsedTime).toMinutes());
-                                    if (!(minutesDiff <= 15)) {
-                                        isProperSlot = true;
+                                    if (minutesDiff <= 15) {
+                                        isProperSlot = false;
+                                        break;
                                     }
                                 }
                                 if (!isProperSlot) {
