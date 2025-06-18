@@ -268,3 +268,9 @@ The demonstration of the app link:
 https://youtu.be/MqnR4Qr4BXo
 
 ## Credits
+
+Special thanks to:
+- **Pak Fajar Muslim** – Lectures and guidance in the DSA course.
+- **Vici Oase** // L0124081 – Created the initial setup, feature development, manual testing.
+- **Ahmad Aditya Nugraha** // L0124084 – Documentation, manual testing, bug reports, feedback.
+- **Bintang A'raaf Stevan Putra** // L0124091 – Feature development, optimizations, manual testing, documentation.
