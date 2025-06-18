@@ -6,6 +6,10 @@
 * [Features](#features)
 * [Installation](#installation)
 * [Usage](#usage)
+    * [Login Menu](#login-menu)
+    * [Patient Menu](#patient-menu)
+    * [Doctor Menu](#doctor-menu)
+    * [Admin Menu](#admin-menu)
 * [Program Structure](#program-structure)
 * [Demo Video](#demo-video)
 * [Credits](#credits)
@@ -69,63 +73,176 @@ java -jar "Daisuke Clinic.jar"
 ## Usage
 
 ### Login Menu
-#### Log In as User
 ![Screenshot.](/screenshots/login/1.png/)
 
-This is the program's starting point.
-The user can choose which role to log in as (`1` for Patient, `2` for Doctor, and `3` for Admin).
-
+The program's starting point. The user can choose which role to log in as (`1` for patients, `2` for doctors, and `3` for admins).
+#### Log In as a User
 ![Screenshot.](/screenshots/login/2.png/)
 
-The example above is when the user choose to log in as patient.
+The image above shows a example of when the user choose to log in as a patient.
 
-#### Register as Patient
+#### Register as a Patient
 ![Screenshot.](/screenshots/login/3.png/)
 
 New patient users can register an account by choosing option `4`.
 
 ### Patient Menu
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Screenshot.](/screenshots/patient/1.png/)
 
 This is the patient's main menu. Below are the features they can access.
 
 #### View Available Specialties
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Screenshot.](/screenshots/patient/3.png/)
 
-It shows the clinic's available specialties that are on service. The menu above can be accessed by choosing the option `3` in the main menu. 
+Shows the clinic's available specialties that are on service. The menu above can be accessed by choosing option `3` in the main menu. 
 #### View Available Doctors
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Screenshot.](/screenshots/patient/4.png/)
 
-Patient users can view available doctors in the clinic by choosing the option `4` (by Specialty) or `5` (by Name), or `5` The menu above shows the example of showing available doctors in the specified specialty ID.
+Patient users can view available doctors in the clinic by choosing option `4` (by Specialty) or `5` (by Name), or `5` The menu above shows an example of showing available doctors in the specified specialty.
 
 > [!NOTE]  
  This feature should be accessed by the patient before scheduling an appointment, to get the doctor ID the patient wants to choose.
 #### Book an Appointment
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Screenshot.](/screenshots/patient/2.png/)
 
-The `Appointments` menu above can be accessed by choosing the option `1` in the main menu.
+The `Appointments` menu above can be accessed by choosing option `1` in the main menu.
 
-The patient can finally book an appointment after choosing their preferred doctor. To book an appointment select the option `1`
+The patient can finally book an appointment after choosing their preferred doctor. To book an appointment select option `1`.
 
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Screenshot.](/screenshots/patient/5.png/)
 
-The patient should schedule their appointment within the doctor's available hours; otherwise, the system will reject the booking.
+The example above shows a success appointment booking. The patient should schedule their appointment within the doctor's available hours; otherwise, the system will reject the booking.
+
 #### View Appointments
+![Screenshot.](/screenshots/patient/6.png/)
+
+The patient can view their upcoming appointments by choosing option `2` or `3` in the `Appointments` menu. The example above shows option `3` menu (`View My Upcoming Appointments`).
+
+#### Cancel an Appointment
+
+![Screenshot.](/screenshots/patient/7.png/)
+
+The menu above can be accessed by choosing option `6` in the `Appointments` menu. Patient can cancel their appointment through the menu if they are uncertain about it.
+
 #### View Medical Record
+![Screenshot.](/screenshots/patient/11.png/)
+
+After a while, the doctor should process the appointment and may update the patient's medical record. 
+The example above shows the current patient's medical record that can be accessed by choosing option `2` (`My Medical Record`) in the main menu.
 #### Manage Profile
+![Screenshot.](/screenshots/patient/9.png/)
+
+Patients can update their profile details, including name, age, address, phone number, and password. The menu above can be accessed by choosing option `6` in the main menu.
 
 ### Doctor Menu
-#### Process Appointments
+![Screenshot.](/screenshots/doctor/1.png/)
+
+The doctor's main menu. Below are the features they can access.
+#### View & Process Appointments
+![Screenshot.](/screenshots/doctor/2.png/)
+
+The image above is the `Appointments` menu for doctors. They can view the upcoming appointments by choosing option `2` (by their specialty) or `3` (their own).
+
+![Screenshot.](/screenshots/doctor/3.png/)
+
+The image above shows an example of viewing current upcoming appointments in their specialty.
+To process an appointment, doctors can choose option `1` (`Process Next Appointment`) in the `Appointments` menu.
+
+![Screenshot.](/screenshots/doctor/4.png/)
+
+Once the appointment is processed, the doctor can decide whether to update the patient's medical record.
+
+![Screenshot.](/screenshots/doctor/5.png/)
+
+The example above shows how the doctor updates the patient's medical record, which requires inputting the complaints, diagnosis, treatment, and so on.
+
 #### View Current Patients
+![Screenshot.](/screenshots/doctor/7.png/)
+
+Right after having an appointment with a patient, that patient will appear in the doctor's list of current patients, whose medical records the doctor can then manage. The menu above can be accessed by choosing option `2` (`My Patients`) in the main menu.
+
+To view the current patients, doctors can choose option `2` (`View My Current Patients`).
+
+![Screenshot.](/screenshots/doctor/8.png/)
+
+The example above shows the current patients that the doctor are handling.
+
 #### Update Patient's Medical Record
+![Screenshot.](/screenshots/doctor/10.png/)
+
+Within the `My Patients` menu, the doctor can check or update a patient’s medical record by selecting option `1`. They may **only access the medical records of patients they are currently handling**.
+
+#### View Doctors
+![Screenshot.](/screenshots/doctor/11.png/)
+
+Doctors can also view the other doctors inside the `View Doctors` menu (option `3` in the main menu). The example above shows a list of doctors in the same specialty.
+
 #### Manage Profile
+![Screenshot.](/screenshots/doctor/12.png/)
+
+Just like the patients, doctors can also manage their profile by choosing option `4` (`Edit Profile`) in the main menu.
 
 ### Admin Menu
+![Screenshot.](/screenshots/admin/1.png/)
+
+The main menu for admins. Provides access to clinic data management.
 #### Specialty Management
-#### Doctor Management 
+![Screenshot.](/screenshots/admin/2.png/)
+
+In this menu, specialties can be managed, including the maximum number of appointments in the specialty. The options inside this menu are self-explanatory; they let admins manage specialty data by adding, viewing, or removing entries.
+
+![Screenshot.](/screenshots/admin/4.PNG/)
+
+The image above (option `1`) shows an example of adding a new specialty.
+
+![Screenshot.](/screenshots/admin/5.png/)
+
+The image above (option `4`) shows an example of displaying a list of all specialties.
+#### Doctor Management
+![Screenshot.](/screenshots/admin/6.png/)
+
+Doctor data management menu. Note that, unlike patients, **only admins can register doctors.** The options of this menu are self-explanatory.
+
+![Screenshot.](/screenshots/admin/8.png/)
+
+The image above (option `1`) shows an example of adding a new doctor along with their schedule.
+
+![Screenshot.](/screenshots/admin/7.png/)
+
+The image above (option `6`) shows an example of displaying a list of all doctors.
 #### Patient Management
+![Screenshot.](/screenshots/admin/10.png/)
+
+This menu handles patient data. Admins can also manually add new patient records when users require help with data entry. The options of this menu are self-explanatory.
+
+![Screenshot.](/screenshots/admin/12.png/)
+
+The image above (option `1`) shows an example of adding a new patient.
+
+![Screenshot.](/screenshots/admin/11.png/)
+
+The image above (option `4`) shows an example of displaying a list of all patients.
+
 #### Admin Management
+![Screenshot.](/screenshots/admin/14.png/)
+
+The admin management. Admins can also manage their own user types, but **this should be done with caution** to prevent misuse of the system. The options of this menu are self-explanatory.
+
+![Screenshot.](/screenshots/admin/16.png/)
+
+The image above (option `1`) shows an example of adding a new admin.
+
+![Screenshot.](/screenshots/admin/15.png/)
+
+The image above (option `4`) shows an example of displaying a list of all admins.
+
 #### View Appointments
+
+![Screenshot.](/screenshots/admin/18.png/)
+
+In this version, admins are limited to monitoring appointments made in the clinic. Appointment management for admins will be available in the future.
+
+The image above (option `6` in the main menu) shows an example of displaying all upcoming appointments in a specified specialty.
 
 ## Program Structure
 
@@ -134,4 +251,3 @@ The demonstration of the app link:
 https://youtu.be/MqnR4Qr4BXo
 
 ## Credits
-
