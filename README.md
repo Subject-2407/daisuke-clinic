@@ -242,7 +242,7 @@ The image above (option `4`) shows an example of displaying a list of all admins
 
 In this version, admins are limited to monitoring appointments made in the clinic. Appointment management for admins will be available in the future.
 
-The image above (option `6` in the main menu) shows an example of displaying all upcoming appointments in a specified specialty.
+The image above (option `6` in the main menu) shows an example of displaying all upcoming appointments in the specified specialty.
 
 ## Program Structure
 
