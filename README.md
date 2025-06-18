@@ -84,7 +84,7 @@ The app's starting point. The user can choose which role to log in as (`1` for p
 #### Log In as a User
 ![Screenshot.](/screenshots/login/2.png/)
 
-The image above shows a example of when the user choose to log in as a patient.
+The image above shows an example of when the user choose to log in as a patient.
 
 #### Register as a Patient
 ![Screenshot.](/screenshots/login/3.png/)
