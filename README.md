@@ -75,7 +75,7 @@ java -jar "Daisuke Clinic.jar"
 ### Login Menu
 ![Screenshot.](/screenshots/login/1.png/)
 
-The program's starting point. The user can choose which role to log in as (`1` for patients, `2` for doctors, and `3` for admins).
+The app's starting point. The user can choose which role to log in as (`1` for patients, `2` for doctors, and `3` for admins).
 #### Log In as a User
 ![Screenshot.](/screenshots/login/2.png/)
 
