@@ -72,6 +72,11 @@ java -jar "Daisuke Clinic.jar"
 
 ## Usage
 
+### 🔑 Dummy Login Data
+Use the following test credentials to log into the system based on user role:
+* Patient – ID: `1` Password: `tes123`
+* Doctor – ID: `1` Password: `tes123`
+* Admin – ID: `300` Password: `yamada111`
 ### Login Menu
 ![Screenshot.](/screenshots/login/1.png/)
 
