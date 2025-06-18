@@ -45,7 +45,7 @@ Each appointment is linked to a patient, a doctor, and a scheduled time. Our sys
 > Patients may book only one appointment per specialty, and each specialty can have its own maximum number of appointment slots (set by admins).
 
 ### 👨🏻‍⚕️ Doctor Scheduling
-Each doctor has a predefined weekly work schedule (days and time ranges).This schedule determines their availability for appointments.
+Each doctor has a predefined weekly work schedule (days and time ranges). This schedule determines their availability for appointments.
 
 Admins can set doctor schedules, ensuring patients only book during valid time slots. The appointment system uses this schedule to validate and prevent double-booking.
 ### 🗂️ Clinic Data Management
