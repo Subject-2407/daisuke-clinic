@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -18,8 +19,11 @@ import implementation.model.enums.AppointmentStatus;
 
 public class AppointmentRepository {
     private static BST<Appointment> appointmentTree = new BST<>();
-    private static final String filePath = "src/saves/appointments.txt";
-    private static final String tempFilePath = "src/saves/temp_appointments.txt"; // for modifying purposes
+    
+    private static final String filePath = Paths.get("saves", "appointments.txt").toString();
+    private static final String tempFilePath = Paths.get("saves", "temp_appointments.txt").toString();
+    // private static final String filePath = "src/saves/appointments.txt";
+    // private static final String tempFilePath = "src/saves/temp_appointments.txt"; // for modifying purposes
 
     public static int getAppointmentSize() { return appointmentTree.size(); }
 

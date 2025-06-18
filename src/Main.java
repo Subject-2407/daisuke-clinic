@@ -12,7 +12,6 @@ import shared.repository.SpecialtyRepository;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        
         // load repositories      
         SpecialtyRepository.load();
         PatientRepository.load();

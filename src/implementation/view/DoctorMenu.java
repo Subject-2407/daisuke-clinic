@@ -42,13 +42,23 @@ public class DoctorMenu {
             String input = new Input(scanner, "Enter choice: ").validate().get();
             switch (input == null ? "0" : input) {
                 case "1":
-                    DoctorAppointmentMenu.show(scanner, profile, specialty);
+                    if (specialty != null) {
+                        DoctorAppointmentMenu.show(scanner, profile, specialty);
+                    } else {
+                        UserInterface.warning("Your specialty data is not found, please contact the admin!");
+                        UserInterface.enter(scanner);
+                    }
                     break;
                 case "2":
                     DoctorPatientsMenu.show(scanner, profile);
                     break;
                 case "3":
-                    DoctorDoctorsMenu.show(scanner, specialty);
+                    if (specialty != null) {
+                        DoctorDoctorsMenu.show(scanner, specialty);
+                    } else {
+                        UserInterface.warning("Your specialty data is not found, please contact the admin!");
+                        UserInterface.enter(scanner);
+                    }
                     break;
                 case "4":
                     DoctorController.editProfile(scanner, profile);

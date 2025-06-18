@@ -271,6 +271,25 @@ public class LinkedList<T> {
         }
         return array;
     }
+
+    @SuppressWarnings({"unchecked","hiding"})
+    public <T> T[] toArray(T[] a) {
+    if (a.length < size) {
+        a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+    }
+    
+    Node temp = head;
+    for (int i = 0; i < size; i++) {
+        a[i] = (T) temp.value;
+        temp = temp.next;
+    }
+    
+    if (a.length > size) {
+        a[size] = null;
+    }
+    
+    return a;
+}
 }
 
 

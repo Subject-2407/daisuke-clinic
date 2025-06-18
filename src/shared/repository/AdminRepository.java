@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.function.Function;
 
 import adt.BST;
@@ -13,8 +14,10 @@ import implementation.model.Admin;
 
 public class AdminRepository {
     private static BST<Admin> adminTree = new BST<>();
-    private static final String filePath = "src/saves/admins.txt";
-    private static final String tempFilePath = "src/saves/temp_admins.txt"; // for deleting purposes
+    private static final String filePath = Paths.get("saves", "admins.txt").toString();
+    private static final String tempFilePath = Paths.get("saves", "temp_admins.txt").toString();
+    // private static final String filePath = "src/saves/admins.txt";
+    // private static final String tempFilePath = "src/saves/temp_admins.txt"; // for deleting purposes
 
     public static int getRepositorySize() { return adminTree.size(); }
 

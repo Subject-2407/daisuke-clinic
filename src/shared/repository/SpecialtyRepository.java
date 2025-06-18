@@ -6,14 +6,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import adt.BST;
 import implementation.model.Specialty;
 
 public class SpecialtyRepository {
     private static BST<Specialty> specialtyTree = new BST<>();
-    private static final String filePath = "src/saves/specialties.txt";
-    private static final String tempFilePath = "src/saves/temp_specialties.txt"; // for deleting purposes
+    private static final String filePath = Paths.get("saves", "specialties.txt").toString();
+    private static final String tempFilePath = Paths.get("saves", "temp_specialties.txt").toString();
+    // private static final String filePath = "src/saves/specialties.txt";
+    // private static final String tempFilePath = "src/saves/temp_specialties.txt"; // for deleting purposes
 
     public static Object[] getAll() {
         return specialtyTree.toArray();

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -15,8 +16,10 @@ import implementation.model.Specialty;
 
 public class DoctorRepository {
     private static BST<Doctor> doctorTree = new BST<>();
-    private static final String filePath = "src/saves/doctors.txt";
-    private static final String tempFilePath = "src/saves/temp_doctors.txt"; // for deleting purposes
+    private static final String filePath = Paths.get("saves", "doctors.txt").toString();
+    private static final String tempFilePath = Paths.get("saves", "temp_doctors.txt").toString();
+    // private static final String filePath = "src/saves/doctors.txt";
+    // private static final String tempFilePath = "src/saves/temp_doctors.txt"; // for deleting purposes
 
     public static int getRepositorySize() { return doctorTree.size(); }
     

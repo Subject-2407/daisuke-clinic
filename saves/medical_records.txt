@@ -8,3 +8,5 @@
 8|8|0|0|N/A|N/A|N/A|N/A|N/A|2025-06-15T00:16:42.628
 9|9|0|0|N/A|N/A|N/A|N/A|N/A|2025-06-15T00:16:42.628
 10|10|0|0|N/A|N/A|N/A|N/A|N/A|2025-06-15T00:16:42.628
+99541|99541|15|13|Occasional blurred vision, slurred speech, for 2 weeks|Transient Ischemic Attack|CT Brain, MRI Brain, Carotid Doppler|Aspirin 81 mg, Clopidogrel 75 mg|Follow-up in Neurology in 2 weeks|2025-06-18T20:08:22.4943233
+151|151|0|0|N/A|N/A|N/A|N/A|N/A|2025-06-18T19:29:18.0597066

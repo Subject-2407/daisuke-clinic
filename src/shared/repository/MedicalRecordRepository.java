@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -15,8 +16,11 @@ import implementation.model.Patient;
 
 public class MedicalRecordRepository {
     private static BST<MedicalRecord> medicalRecordTree = new BST<>();
-    private static final String filePath = "src/saves/medical_records.txt";
-    private static final String tempFilePath = "src/saves/temp_medical_records.txt"; // for modifying purposes
+
+    private static final String filePath = Paths.get("saves", "medical_records.txt").toString();
+    private static final String tempFilePath = Paths.get("saves", "temp_medical_records.txt").toString();
+    // private static final String filePath = "src/saves/medical_records.txt";
+    // private static final String tempFilePath = "src/saves/temp_medical_records.txt"; // for modifying purposes
 
     public static void add(MedicalRecord record) {
         medicalRecordTree.insert(record);

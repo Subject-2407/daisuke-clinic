@@ -2,11 +2,10 @@ package implementation.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
+import adt.LinkedList;
 import implementation.model.enums.Gender;
 import implementation.model.interfaces.Identifiable;
 import shared.repository.AppointmentRepository;
@@ -106,10 +105,10 @@ public class MedicalRecord implements Identifiable {
             int maxLength = 50;
             if (text.length() <= maxLength) return new String[]{text};
             
-            List<String> lines = new ArrayList<>();
+            LinkedList<String> lines = new LinkedList<>();
             int index = 0;
             while (index < text.length()) {
-                lines.add(text.substring(index, Math.min(index + maxLength, text.length())));
+                lines.insert(text.substring(index, Math.min(index + maxLength, text.length())));
                 index += maxLength;
             }
             return lines.toArray(new String[0]);
