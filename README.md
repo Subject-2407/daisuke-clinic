@@ -147,7 +147,7 @@ Patients can update their profile details, including name, age, address, phone n
 The doctor's main menu. Below are the features they can access.
 * [View & Process Appointments](#view-&-process-appointments)
 * [View Current Patients](#view-current-patients)
-* [Update Patient's Medical Record](#update-patient's-medical-record)
+* [Update Patient's Medical Record](#update-patients-medical-record)
 * [View Doctors](#view-doctors)
 * [Manage Profile](#manage-profile)
 #### View & Process Appointments
