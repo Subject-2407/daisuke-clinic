@@ -263,8 +263,86 @@ The image above (option `6` in the main menu) shows an example of displaying all
 
 ## Program Structure
 
+The project follows a modular and well-organized folder structure, as shown below:
+```
+src/
+├── adt/                    # Abstract data types, custom data structures
+├── implementation/         # Core implementation of the application
+│   ├── controller/         # Handles application logic and user input
+│   ├── model/              # Entity classes (e.g., Patient, Doctor, Appointment)
+│   ├── view/               # User interface layer (console menus and displays)
+├── shared/                 # Shared components used across modules
+│   ├── enums/              # Enumerations for roles, etc.
+│   ├── repository/         # Data loading/saving to and from files
+│   └── LoginState.java     # Tracks current login state/session
+├── utility/                # Utility classes for common helper functions
+├── Main.java               # Entry point of the application
+
+```
+### 📁 `adt/` – Abstract Data Types
+> Contains custom data structures designed to optimize data management and retrieval throughout the system.
+- 📄 `BST.java` – Used to store and quickly search patient, doctor, or appointment data based on object's ID. Ensures efficient lookup, insertion, and deletion.
+- 📄 `LinkedList.java` – Ideal for maintaining temporary, linear data; such as filtered lists of doctors or patients based on certain properties. Also useful for dynamic traversal and manipulation.
+- 📄 `Map.java` – Used to store doctor schedules. Enables fast access of specific doctor schedules.
+- 📄 `PriorityQueue.java` – Manages appointment queues for each specialty by prioritizing patients based on appointment time, ensuring a fair queue system.
+
+### 📁 `implementation/model` – Data Models
+> Defines the core data structures used throughout the system. Each class represents a real-world entity.
+- 📄 `Admin.java` – Represents an administrator.
+- 📄 `Patient.java` – Represents a patient with details like name, gender, and contact info.
+- 📄 `Doctor.java` – Represents a doctor with details like specialty and working hours.
+- 📄 `Appointment.java` – Represents a scheduled meeting between a doctor and a patient.
+- 📄 `MedicalRecord.java` – Stores a patient's medical history including complaints, diagnosis, treatment, etc.
+- 📄 `Specialty.java` – Represents a medical specialty or department (e.g., *Pediatrics, Cardiology*).
+- 📄 `WorkingHours.java` – Defines the working hours for doctors.
+- 📄 `interfaces/Identifiable.java` – A base interface used by multiple model classes to provide a consistent method for retrieving an object's ID. Useful for generalization and searching.
+- 📄 `enums/AppointmentStatus.java` – Defines the state of an appointment.
+- 📄 `enums/Gender.java` – Enum to standardize gender selection.
+
+### 📁 `implementation/view` – User Interface
+> Contains the user interface menus that appear in the console application. 
+- 📄 `LoginMenu.java` – Entry point menu for logging in or registering.
+- 📄 `AdminMenu.java` – The main menu shown to admin users.
+- 📄 `DoctorMenu.java` – The main menu shown to doctors.
+- 📄 `PatientMenu.java` – The main menu shown to patients.
+- 📄 `admin/AdminManagementMenu.java` – Handles admin data management.
+- 📄 `admin/DoctorManagementMenu.java` – Allows admins to add, edit, or remove doctor data.
+- 📄 `admin/PatientManagementMenu.java` – Allows admins to add, edit, or remove patient data.
+- 📄 `admin/SpecialtyManagementMenu.java` – Used to manage the list of medical specialties/departments.
+- 📄 `doctor/DoctorAppointmentMenu.java` – Lets doctors view and manage their appointment list.
+- 📄 `doctor/DoctorDoctorsMenu.java` – Lets doctors to view a list of other doctors.
+- 📄 `doctor/DoctorPatientsMenu.java` – Displays the list of patients under their care and access to their records.
+- 📄 `patient/PatientAppointmentMenu.java` – Interface for booking and viewing patient appointments.
+
+### 📁 `implementation/controller` – Controllers
+> Contains the core logic handlers that mediate between the UI, the data layer, and utility or repository operations.
+- 📄 `AdminController.java` – Handles admin-related functionalities such as managing doctors, specialties, and viewing appointment overviews.
+- 📄 `AppointmentController.java` – Manages appointment creation, validation (e.g., schedule conflicts), and appointment status tracking.
+- 📄 `DoctorController.java` – Manages doctor data such as profile creation, updates, schedule assignment, and doctor list handling.
+- 📄 `LoginController.java` – Handles authentication and login logic for patients, doctors, and admins, and sets user session state.
+- 📄 `MedicalRecordController.java` – Manages the creation and updating medical records during appointments.
+- 📄 `PatientController.java` – Handles patient registration, profile updates, and patient list handling.
+- 📄 `SpecialtyController.java` – Manages operations related to medical specialties or departments, including viewing available specialties.
+
+### 📁 `shared/` – Shared Components
+> Contains global resources that are reused across various parts of the application.
+- 📄 `LoginState.java` – Holds the current logged-in user’s session info (e.g., role and ID).
+- 📄 `enums/Role.java` – Defines user roles in the system: `ADMIN`, `DOCTOR`, and `PATIENT`. It’s used for access control and menu routing.
+- 📄 `repository/AdminRepository.java` – Handles CRUD operations and data storage for admin accounts.
+- 📄 `repository/AppointmentRepository.java` – Manages appointments such as saving, searching, and listing all appointments.
+- 📄 `repository/DoctorRepository.java` – Handles CRUD operations and data storage for doctor accounts.
+- 📄 `repository/MedicalRecordRepository.java` – Stores and retrieves patient medical records.
+- 📄 `repository/PatientRepository.java` – Handles CRUD operations and data storage for patient accounts.
+- 📄 `repository/SpecialtyRepository.java` – Handles CRUD operations and data storage for all medical specialties.
+
+### 📁 `utility/` – Utility Classes
+> Provides helper classes that support various functionalities across the application.
+- 📄 `Hasher.java` – Provides an SHA-256 algorithm method for hashing strings (e.g., for password protection).
+- 📄 `Input.java` – A wrapper for handling user input via the console. Includes validation logic, input prompts, and parsing utilities.
+- 📄 `Input.java` – Contains helper methods for displaying formatted output to the console.
 ## Demo Video
-The demonstration of the app link:
+Demo link for the app:
+
 https://youtu.be/MqnR4Qr4BXo
 
 ## Credits
