@@ -90,6 +90,13 @@ New patient users can register an account by choosing option `4`.
 ![Screenshot.](/screenshots/patient/1.png/)
 
 This is the patient's main menu. Below are the features they can access.
+* [View Available Specialties](#view-available-specialties)
+* [View Available Doctors](#view-available-doctors)
+* [Book an Appointment](#book-an-appointment)
+* [View Appointments](#view-appointments)
+* [Cancel an Appointment](#cancel-an-appointment)
+* [View Medical Record](#view-medical-record)
+* [Manage Profile](#manage-profile)
 
 #### View Available Specialties
 ![Screenshot.](/screenshots/patient/3.png/)
@@ -138,6 +145,11 @@ Patients can update their profile details, including name, age, address, phone n
 ![Screenshot.](/screenshots/doctor/1.png/)
 
 The doctor's main menu. Below are the features they can access.
+* [View & Process Appointments](#view-&-process-appointments)
+* [View Current Patients](#view-current-patients)
+* [Update Patient's Medical Record](#update-patient's-medical-record)
+* [View Doctors](#view-doctors)
+* [Manage Profile](#manage-profile)
 #### View & Process Appointments
 ![Screenshot.](/screenshots/doctor/2.png/)
 
@@ -186,6 +198,11 @@ Just like the patients, doctors can also manage their profile by choosing option
 ![Screenshot.](/screenshots/admin/1.png/)
 
 The main menu for admins. Provides access to clinic data management.
+* [Specialty Management](#specialty-management)
+* [Doctor Management](#doctor-management)
+* [Patient Management](#patient-management)
+* [Admin Management](#admin-management)
+* [View Appointments](#view-appointments)
 #### Specialty Management
 ![Screenshot.](/screenshots/admin/2.png/)
 
