@@ -77,8 +77,8 @@ Use the following test credentials to log into the system based on user role:
 * Patient – ID: `1` Password: `tes123`
 * Doctor – ID: `1` Password: `tes123`
 * Admin – ID: `300` Password: `yamada111`
-<details>
-<summary>### Login Menu</summary>
+
+### Login Menu
 ![Screenshot.](/screenshots/login/1.png/)
 
 The app's starting point. The user can choose which role to log in as (`1` for patients, `2` for doctors, and `3` for admins).
@@ -91,7 +91,7 @@ The image above shows an example of when the user choose to log in as a patient.
 ![Screenshot.](/screenshots/login/3.png/)
 
 New patient users can register an account by choosing option `4`.
-</details>
+
 ### Patient Menu
 ![Screenshot.](/screenshots/patient/1.png/)
 
